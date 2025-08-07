@@ -1,0 +1,1 @@
+// PostgreSQL event schema with Sequelize or Knex
