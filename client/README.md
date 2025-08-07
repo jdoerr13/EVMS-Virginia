@@ -42,30 +42,23 @@ client/
 ├── package.json
 └── README.md
 
-yaml
-Copy
-Edit
-
 ---
 
 ## 📦 Setup Instructions
 
 1. Clone the repository:
-   ```bash
+
    git clone https://github.com/jdoerr13/EVMS-Virginia.git
    cd EVMS-Virginia/client
 
 
-Install dependencies:
+2. Install dependencies:
 
 npm install
 
-
-Start the development server:
+3. Start the development server:
 
 npm start
-
-
 
 
 📁 .gitignore (already included)
