@@ -1,5 +1,6 @@
+// Sidebar.jsx
 import React from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom"; // ✅ added useNavigate
 import { useRole } from "../contexts/RoleContext";
 
 const allNavItems = {
@@ -10,7 +11,15 @@ const allNavItems = {
   ],
   admin: [
     { path: "/admin", label: "Admin Dashboard" },
-    { path: "/admin/requests", label: "Review Requests" }, // future
+    { path: "/admin/requests", label: "Review Requests" },
+    { path: "/contracts", label: "Contract Generator" },
+    { path: "/invoices", label: "Invoices" },
+    { path: "/registration", label: "Registration" },
+    { path: "/speakers", label: "Speaker Bios" },
+    { path: "/crm", label: "CRM" },
+    { path: "/resources", label: "Resource Management" },
+    { path: "/reports", label: "Reports" },
+    { path: "/accessibility-demo", label: "Accessibility" }
   ],
   default: [
     { path: "/login", label: "Login" },
@@ -21,6 +30,7 @@ const allNavItems = {
 export default function Sidebar() {
   const { role, setRole } = useRole();
   const location = useLocation();
+  const navigate = useNavigate(); // ✅ initialize navigate
   const navItems = allNavItems[role] || allNavItems.default;
 
   return (
@@ -29,7 +39,9 @@ export default function Sidebar() {
         <h2 className="text-2xl font-bold mb-8 tracking-wide text-blue-400">EVMS</h2>
         <nav className="space-y-2">
           {navItems.map(({ path, label }) => {
-            const isActive = location.pathname === path || location.pathname.startsWith(path + "#");
+            const isActive =
+              location.pathname === path ||
+              location.pathname.startsWith(path + "#");
             return (
               <NavLink
                 key={path}
@@ -51,7 +63,7 @@ export default function Sidebar() {
       <button
         onClick={() => {
           setRole(null);
-          window.location.href = "/login";
+          navigate("/login"); // ✅ use navigate instead of window.location.href
         }}
         className="w-full bg-red-600 text-white py-2 rounded-md font-semibold hover:bg-red-700 transition"
       >
