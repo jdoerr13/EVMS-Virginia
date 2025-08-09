@@ -1,103 +1,102 @@
-import React, { useState } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function SecuritySettings() {
-  const [settings, setSettings] = useState({
-    enforceStrongPasswords: true,
-    requireMFA: false,
-    sessionTimeout: 30,
-    roleBasedAccess: true,
-  });
+  const navigate = useNavigate();
 
-  const handleChange = (field, value) => {
-    setSettings((prev) => ({ ...prev, [field]: value }));
-  };
+  // Mock security settings data
+  const mockSettings = [
+    { id: 1, setting: "SSO/SAML Integration", status: "Not Configured" },
+    { id: 2, setting: "OIDC with JIT Provisioning", status: "Not Configured" },
+    { id: 3, setting: "Role-Based Access Control", status: "Enabled" },
+    { id: 4, setting: "Multi-Factor Authentication", status: "Coming in Phase 2" },
+    { id: 5, setting: "Audit Logging", status: "Coming in Phase 3" }
+  ];
 
   return (
     <div className="p-6 bg-white shadow rounded-lg space-y-6">
       {/* RFP Context */}
       <div className="bg-blue-50 border-l-4 border-blue-400 p-4 text-sm text-gray-700">
-        <p className="font-semibold">This section will manage security and access control for EVMS, including:</p>
+        <p className="font-semibold">This section will provide configuration and monitoring for security features including:</p>
         <ul className="list-disc ml-5 mt-2 space-y-1">
-          <li>Role-based access restrictions for all modules</li>
-          <li>Multi-factor authentication (MFA) and strong password enforcement</li>
-          <li>Automatic session timeout and audit logging</li>
-          <li>Secure API access and encryption of sensitive data</li>
+          <li>SSO/SAML 2.x or OIDC integration with Just-In-Time (JIT) provisioning</li>
+          <li>Role-based access with segregation by college and tenant</li>
+          <li>Multi-factor authentication for all privileged accounts</li>
+          <li>Audit logging for all login and configuration changes</li>
         </ul>
         <p className="mt-2 italic">
-          * Per RFP requirements, future phases will integrate SSO (Single Sign-On) with VCCS systems, implement full encryption at rest, and meet FERPA & HIPAA compliance where applicable.
+          * Per RFP requirements, these features will meet FERPA, GDPR/CCPA, and SOC 2 Type II compliance.
         </p>
       </div>
 
-      {/* Demo Banner */}
+      {/* Demo Mode Banner */}
       <div className="bg-gray-100 text-gray-700 p-3 rounded">
-        <strong>Demo Mode:</strong> Security settings are read-only placeholders.
+        <strong>Demo Mode:</strong> Security settings are read-only. Placeholder per RFP.
       </div>
 
-      <h2 className="text-2xl font-bold">Security & Access Control</h2>
+      {/* Header + Back Button */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">Security & Authentication Settings</h2>
+        <button
+          onClick={() => navigate(-1)}
+          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+        >
+          ← Back
+        </button>
+      </div>
 
-      {/* Settings Table */}
-      <table className="w-full border-collapse mt-4">
+      {/* Feature Cards */}
+      <div className="space-y-4">
+        <div className="border rounded-lg p-4 shadow-sm">
+          <h3 className="text-lg font-semibold">🔑 SSO & SAML Integration</h3>
+          <p className="text-sm text-gray-600">
+            Enable secure single sign-on for staff and attendees using institution identity providers.
+          </p>
+        </div>
+        <div className="border rounded-lg p-4 shadow-sm">
+          <h3 className="text-lg font-semibold">🛡 Role-Based Access Control</h3>
+          <p className="text-sm text-gray-600">
+            Assign roles with specific permissions to protect sensitive event data.
+          </p>
+        </div>
+        <div className="border rounded-lg p-4 shadow-sm">
+          <h3 className="text-lg font-semibold">📲 Multi-Factor Authentication</h3>
+          <p className="text-sm text-gray-600">
+            Add a second layer of security for high-privilege accounts.
+          </p>
+        </div>
+        <div className="border rounded-lg p-4 shadow-sm">
+          <h3 className="text-lg font-semibold">📜 Audit Logging</h3>
+          <p className="text-sm text-gray-600">
+            Track all login attempts and configuration changes for compliance and investigations.
+          </p>
+        </div>
+      </div>
+
+      {/* Mock Settings Table */}
+      <table className="w-full border-collapse mt-6">
         <thead>
           <tr className="bg-gray-100 text-left">
             <th className="p-2 border">Setting</th>
-            <th className="p-2 border">Value</th>
+            <th className="p-2 border">Status</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td className="p-2 border">Enforce Strong Passwords</td>
-            <td className="p-2 border">
-              <input
-                type="checkbox"
-                checked={settings.enforceStrongPasswords}
-                onChange={(e) => handleChange("enforceStrongPasswords", e.target.checked)}
-                disabled
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="p-2 border">Require Multi-Factor Authentication</td>
-            <td className="p-2 border">
-              <input
-                type="checkbox"
-                checked={settings.requireMFA}
-                onChange={(e) => handleChange("requireMFA", e.target.checked)}
-                disabled
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="p-2 border">Session Timeout (minutes)</td>
-            <td className="p-2 border">
-              <input
-                type="number"
-                value={settings.sessionTimeout}
-                onChange={(e) => handleChange("sessionTimeout", e.target.value)}
-                disabled
-                className="w-20 border rounded p-1"
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="p-2 border">Role-Based Access Control</td>
-            <td className="p-2 border">
-              <input
-                type="checkbox"
-                checked={settings.roleBasedAccess}
-                onChange={(e) => handleChange("roleBasedAccess", e.target.checked)}
-                disabled
-              />
-            </td>
-          </tr>
+          {mockSettings.map(s => (
+            <tr key={s.id}>
+              <td className="p-2 border">{s.setting}</td>
+              <td className="p-2 border">{s.status}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
 
-      {/* Save Button (Disabled in Demo Mode) */}
+      {/* Demo Action */}
       <button
         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mt-4"
-        onClick={() => alert("Demo Mode: Saving security settings is disabled.")}
+        onClick={() => alert("Demo Mode: Updating settings is disabled in this demo.")}
       >
-        Save Settings
+        Update Settings
       </button>
     </div>
   );

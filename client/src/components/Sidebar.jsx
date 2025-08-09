@@ -5,12 +5,17 @@ import { useRole } from "../contexts/RoleContext";
 const allNavItems = {
   public: [{ path: "/public", label: "Public Calendar" }],
   eventManager: [
-    { path: "/event-manager", label: "Event Manager" },
-    { path: "/manager/create", label: "Create Event" },
-    { path: "/venues", label: "Venue Inventory" },
-    { path: "/breakout-sessions", label: "Breakout Sessions" }, // shared with admin
-    { path: "/mobile-app", label: "Mobile App" }, // shared with admin
-  ],
+  { path: "/event-manager", label: "Event Manager Dash" },
+  { path: "/manager/create", label: "Create Event" },
+  { path: "/venues", label: "Venue Inventory" },
+  { path: "/registration", label: "Registration" },
+  { path: "/speakers", label: "Speaker Bios" },
+  { path: "/crm", label: "CRM" },
+  { path: "/resources", label: "Resource Management" },
+  { path: "/reports", label: "Reports" },
+  { path: "/breakout-sessions", label: "Breakout Sessions" },
+  { path: "/mobile-app", label: "Mobile App" },
+],
   admin: [
     { path: "/admin", label: "Admin Dashboard" },
     { path: "/admin/requests", label: "Review Requests" },

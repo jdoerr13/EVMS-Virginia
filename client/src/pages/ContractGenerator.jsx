@@ -72,6 +72,7 @@ export default function ContractGenerator() {
     <div className="max-w-4xl mx-auto space-y-4">
       <h1 className="text-2xl font-bold">Contract Generator</h1>
 
+
       {/* Event picker if no query param or for switching */}
       <div className="bg-gray-50 border rounded p-3 space-y-2">
         <div className="font-semibold">Event</div>
@@ -144,6 +145,14 @@ export default function ContractGenerator() {
           {preview}
         </pre>
       )}
+      <button
+          onClick={() => navigate(-1)}
+          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+        >
+          ← Back
+        </button>
     </div>
+
+    
   );
 }

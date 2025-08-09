@@ -4,6 +4,7 @@ const EventContext = createContext();
 
 function seedEvents() {
   return [
+    // --- Your existing events ---
     {
       id: 1,
       title: "Fall Open House",
@@ -100,6 +101,64 @@ function seedEvents() {
       ],
       registrations: [
         { name: "Chris Allen", email: "chris.allen@example.com" },
+      ],
+      docs: [],
+    },
+
+    // --- New mock events ---
+    {
+      id: 6,
+      title: "Technology Innovation Summit",
+      college: "Northern Virginia Community College",
+      venue: "Tech Hall A",
+      date: "2025-10-22",
+      startTime: "09:00",
+      endTime: "17:00",
+      description: "Showcasing the latest in AI, robotics, and software development.",
+      status: "Approved",
+      requester: "techsummit@nvc.edu",
+      sessions: [
+        { id: "s1", title: "AI in Education", capacity: 50 },
+        { id: "s2", title: "Robotics Live Demo", capacity: 40 },
+      ],
+      registrations: [
+        { name: "Jordan White", email: "jordan.white@example.com" },
+        { name: "Priya Singh", email: "priya.singh@example.com" },
+      ],
+      docs: [],
+    },
+    {
+      id: 7,
+      title: "Leadership Development Workshop",
+      college: "Tidewater Community College",
+      venue: "Leadership Center Room 101",
+      date: "2025-11-05",
+      startTime: "13:00",
+      endTime: "17:00",
+      description: "Interactive workshop to build leadership and team skills.",
+      status: "Pending",
+      requester: "leadership@tcc.edu",
+      sessions: [
+        { id: "s1", title: "Team Building Exercises", capacity: 25 },
+        { id: "s2", title: "Conflict Resolution", capacity: 30 },
+      ],
+      registrations: [],
+      docs: [],
+    },
+    {
+      id: 8,
+      title: "Community Volunteer Fair",
+      college: "Virginia Western Community College",
+      venue: "Outdoor Quad",
+      date: "2025-09-20",
+      startTime: "10:00",
+      endTime: "14:00",
+      description: "Connect with local non-profits and find volunteer opportunities.",
+      status: "Approved",
+      requester: "volunteer@vwcc.edu",
+      sessions: [],
+      registrations: [
+        { name: "Anna Scott", email: "anna.scott@example.com" },
       ],
       docs: [],
     },

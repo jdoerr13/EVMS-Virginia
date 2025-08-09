@@ -1,30 +1,32 @@
-// src/pages/Compliance.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Compliance() {
   const navigate = useNavigate();
 
-  // Mock compliance checklist
-  const mockCompliance = [
-    { id: 1, policy: "FERPA Data Protection", status: "Drafted", lastReview: "2025-07-15" },
-    { id: 2, policy: "ADA/Section 508 Accessibility", status: "In Review", lastReview: "2025-07-20" },
-    { id: 3, policy: "GDPR / CCPA Privacy", status: "Approved", lastReview: "2025-06-10" },
-    { id: 4, policy: "PCI DSS Payment Security", status: "Not Started", lastReview: "-" },
-    { id: 5, policy: "Data Retention & Erasure", status: "Drafted", lastReview: "2025-07-25" },
-    { id: 6, policy: "Ethical AI & Bias Mitigation", status: "Not Started", lastReview: "-" }
-  ];
-
   return (
-    <div className="space-y-6">
-      {/* Demo mode notice */}
-      <div className="bg-gray-100 text-gray-700 p-3 rounded">
-        <strong>Demo Mode:</strong> Compliance policy management is read-only. Placeholder per RFP.
+    <div className="p-6 bg-white shadow rounded-lg space-y-6">
+      {/* RFP Context */}
+      <div className="bg-blue-50 border-l-4 border-blue-400 p-4 text-sm text-gray-700">
+        <p className="font-semibold">This section will manage compliance and policy documentation for all events, including:</p>
+        <ul className="list-disc ml-5 mt-2 space-y-1">
+          <li>Storage and tracking of safety, security, and accessibility policies</li>
+          <li>Automatic expiration alerts for required certifications</li>
+          <li>FERPA, ADA, OSHA, and local ordinance compliance checks</li>
+          <li>Role-based access to sensitive compliance documents</li>
+        </ul>
+        <p className="mt-2 italic">
+          * Per RFP requirements, future phases will include automated policy updates, e-signatures for acknowledgments, and integration with audit logs.
+        </p>
       </div>
 
-      {/* Header + back button */}
+      {/* Demo Banner */}
+      <div className="bg-gray-100 text-gray-700 p-3 rounded">
+        <strong>Demo Mode:</strong> Compliance module is in placeholder mode. No live document storage is connected.
+      </div>
+
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold">Compliance & Policies</h2>
+        <h2 className="text-2xl font-bold">Compliance & Policies</h2>
         <button
           onClick={() => navigate(-1)}
           className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
@@ -33,48 +35,43 @@ export default function Compliance() {
         </button>
       </div>
 
-      {/* Short RFP description */}
-      <div className="bg-white shadow rounded-lg p-4 space-y-2">
-        <p>This module will store, manage, and track required compliance policies, ensuring the system meets:</p>
-        <ul className="list-disc pl-6 space-y-1">
-          <li>Educational privacy laws (FERPA)</li>
-          <li>Accessibility standards (ADA / Section 508)</li>
-          <li>International and state privacy laws (GDPR, CCPA)</li>
-          <li>Payment security requirements (PCI DSS)</li>
-          <li>Data retention and deletion rules</li>
-          <li>Ethical AI guidelines and bias mitigation</li>
-        </ul>
-        <p className="text-gray-500 text-sm">
-          * Per RFP, these policies must be reviewed regularly, version-controlled, and exportable for audits.
-        </p>
+      {/* Mock Feature Cards */}
+      <div className="space-y-4">
+        <div className="border rounded-lg p-4 shadow-sm">
+          <h3 className="text-lg font-semibold">📄 Policy Library</h3>
+          <p className="text-sm text-gray-600">
+            Centralized repository for safety, accessibility, and operational policies with search and version control.
+          </p>
+        </div>
+
+        <div className="border rounded-lg p-4 shadow-sm">
+          <h3 className="text-lg font-semibold">⏰ Expiration Tracking</h3>
+          <p className="text-sm text-gray-600">
+            Automated reminders for upcoming policy expirations and required updates.
+          </p>
+        </div>
+
+        <div className="border rounded-lg p-4 shadow-sm">
+          <h3 className="text-lg font-semibold">🔐 Restricted Access</h3>
+          <p className="text-sm text-gray-600">
+            Role-based controls for sensitive documents such as security protocols or vendor NDAs.
+          </p>
+        </div>
+
+        <div className="border rounded-lg p-4 shadow-sm">
+          <h3 className="text-lg font-semibold">✅ Compliance Checks</h3>
+          <p className="text-sm text-gray-600">
+            Built-in validation tools for FERPA, ADA, OSHA, and other regulatory requirements.
+          </p>
+        </div>
       </div>
 
-      {/* Mock compliance table */}
-      <table className="w-full border-collapse mt-4">
-        <thead>
-          <tr className="bg-gray-100 text-left">
-            <th className="p-2 border">Policy</th>
-            <th className="p-2 border">Status</th>
-            <th className="p-2 border">Last Review</th>
-          </tr>
-        </thead>
-        <tbody>
-          {mockCompliance.map(c => (
-            <tr key={c.id}>
-              <td className="p-2 border">{c.policy}</td>
-              <td className="p-2 border">{c.status}</td>
-              <td className="p-2 border">{c.lastReview}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {/* Add new policy (demo only) */}
+      {/* Demo Action */}
       <button
         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mt-4"
-        onClick={() => alert("Demo Mode: Adding compliance policies is disabled in this demo.")}
+        onClick={() => alert("Demo Mode: Compliance document upload not enabled in this demo.")}
       >
-        Add Policy
+        Upload Compliance Document
       </button>
     </div>
   );
