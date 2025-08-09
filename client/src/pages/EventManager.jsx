@@ -1,4 +1,3 @@
-// src/pages/EventManager.jsx
 import React, { useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useEvents } from "../contexts/EventContext";
@@ -8,19 +7,18 @@ export default function EventManager() {
   const { events, updateEventStatus } = useEvents();
   const [filterStatus, setFilterStatus] = useState("All");
   const [search, setSearch] = useState("");
+  const [selectedEventId, setSelectedEventId] = useState(null);
 
-  // --- Pending queue
   const pending = useMemo(
     () => events.filter((e) => e.status === "Pending"),
     [events]
   );
 
-  // --- Conflicts this week (same venue + same date, between Mon–Sun of current week)
   const conflictsThisWeek = useMemo(() => {
     const now = new Date();
-    const day = now.getDay(); // 0 Sun .. 6 Sat
+    const day = now.getDay();
     const weekStart = new Date(now);
-    weekStart.setDate(now.getDate() - ((day + 6) % 7)); // Monday
+    weekStart.setDate(now.getDate() - ((day + 6) % 7));
     weekStart.setHours(0, 0, 0, 0);
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekStart.getDate() + 7);
@@ -31,30 +29,45 @@ export default function EventManager() {
       return d >= weekStart && d < weekEnd;
     });
 
-    const byKey = new Map(); // key = `${venue}__${date}`
+    const byKey = new Map();
     withinWeek.forEach((e) => {
       const key = `${(e.venue || "").trim().toLowerCase()}__${e.date}`;
       if (!byKey.has(key)) byKey.set(key, []);
       byKey.get(key).push(e);
     });
 
+    function overlaps(a, b) {
+      if (!a.startTime || !a.endTime || !b.startTime || !b.endTime) return false;
+      const toMin = (t) => {
+        const [h, m] = t.split(":").map(Number);
+        return h * 60 + m;
+      };
+      const aStart = toMin(a.startTime), aEnd = toMin(a.endTime);
+      const bStart = toMin(b.startTime), bEnd = toMin(b.endTime);
+      return aStart < bEnd && bStart < aEnd;
+    }
+
     const conflicts = [];
     byKey.forEach((list) => {
-      if (list.length > 1) {
-        // push one record representing the conflict group
+      const pairs = [];
+      for (let i = 0; i < list.length; i++) {
+        for (let j = i + 1; j < list.length; j++) {
+          if (overlaps(list[i], list[j])) pairs.push([list[i], list[j]]);
+        }
+      }
+      if (pairs.length > 0) {
         conflicts.push({
           id: `${list[0].venue}-${list[0].date}`,
           venue: list[0].venue,
           date: list[0].date,
-          count: list.length,
-          events: list,
+          count: new Set(pairs.flat().map((e) => e.id)).size,
+          events: Array.from(new Set(pairs.flat())),
         });
       }
     });
     return conflicts;
   }, [events]);
 
-  // --- Filters for the main table (unchanged)
   const filteredEvents = events.filter((event) => {
     const matchesStatus = filterStatus === "All" || event.status === filterStatus;
     const q = search.toLowerCase();
@@ -65,12 +78,29 @@ export default function EventManager() {
     return matchesStatus && matchesSearch;
   });
 
+  const selectedEvent = selectedEventId
+    ? events.find((e) => String(e.id) === String(selectedEventId))
+    : null;
+
+  const gotoContract = () => {
+    if (!selectedEvent) return;
+    navigate(`/contracts?eventId=${selectedEvent.id}`);
+  };
+  const gotoInvoices = () => {
+    if (!selectedEvent) return;
+    navigate(`/invoices?eventId=${selectedEvent.id}`);
+  };
+  const gotoEmailRegistrants = () => {
+  if (!selectedEvent) return;
+  navigate(`/email-registrants?eventId=${selectedEvent.id}`);
+};
+
   return (
     <div className="p-6 bg-white shadow rounded-lg space-y-6">
       <header className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Event Manager</h2>
 
-        {/* Shortcuts */}
+        {/* Shortcuts use selectedEventId */}
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => navigate("/manager/create")}
@@ -78,26 +108,44 @@ export default function EventManager() {
           >
             Create Event
           </button>
+
           <button
-            onClick={() => navigate("/contracts")}
-            className="px-3 py-2 rounded border"
+            onClick={gotoContract}
+            disabled={!selectedEvent}
+            className="px-3 py-2 rounded border disabled:opacity-50"
+            title={!selectedEvent ? "Select an event row first" : "Generate contract for selected"}
           >
             Generate Contract
           </button>
+
           <button
-            onClick={() => navigate("/invoices")}
-            className="px-3 py-2 rounded border"
+            onClick={gotoInvoices}
+            disabled={!selectedEvent}
+            className="px-3 py-2 rounded border disabled:opacity-50"
+            title={!selectedEvent ? "Select an event row first" : "Create invoices for selected"}
           >
             Create Invoice
           </button>
-          <button
-            onClick={() => navigate("/registration")}
-            className="px-3 py-2 rounded border"
-          >
-            Email Registrants
-          </button>
+
+        <button
+          onClick={gotoEmailRegistrants}
+          disabled={!selectedEvent}
+          className="px-3 py-2 rounded border disabled:opacity-50"
+          title={!selectedEvent ? "Select an event row first" : "Email registrants for selected"}
+        >
+          Email Registrants
+        </button>
         </div>
       </header>
+
+      {/* Selection hint */}
+      <div className="text-sm text-gray-600">
+        {selectedEvent ? (
+          <>Selected: <span className="font-medium">{selectedEvent.title}</span> ({selectedEvent.date})</>
+        ) : (
+          <>Tip: click a row to select an event for the actions above.</>
+        )}
+      </div>
 
       {/* Summary tiles */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -157,20 +205,24 @@ export default function EventManager() {
             </thead>
             <tbody>
               {pending.slice(0, 5).map((e) => (
-                <tr key={e.id} className="hover:bg-gray-50">
+                <tr
+                  key={e.id}
+                  className={`hover:bg-gray-50 cursor-pointer ${selectedEventId === e.id ? "bg-blue-50" : ""}`}
+                  onClick={() => setSelectedEventId(e.id)}
+                >
                   <td className="p-2 border">{e.title}</td>
                   <td className="p-2 border">{e.venue}</td>
                   <td className="p-2 border">{e.date}</td>
                   <td className="p-2 border">{e.requester || "N/A"}</td>
                   <td className="p-2 border space-x-2">
                     <button
-                      onClick={() => updateEventStatus(e.id, "Approved")}
+                      onClick={(ev) => { ev.stopPropagation(); updateEventStatus(e.id, "Approved"); }}
                       className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
                     >
                       Approve
                     </button>
                     <button
-                      onClick={() => updateEventStatus(e.id, "Rejected")}
+                      onClick={(ev) => { ev.stopPropagation(); updateEventStatus(e.id, "Rejected"); }}
                       className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
                     >
                       Reject
@@ -183,7 +235,7 @@ export default function EventManager() {
         )}
       </section>
 
-      {/* Existing filters */}
+      {/* Filters */}
       <div className="flex flex-wrap gap-4">
         <select
           value={filterStatus}
@@ -205,7 +257,7 @@ export default function EventManager() {
         />
       </div>
 
-      {/* Existing main table (unchanged) */}
+      {/* Main table */}
       <table className="w-full border-collapse">
         <thead>
           <tr className="bg-gray-100 text-left">
@@ -220,29 +272,51 @@ export default function EventManager() {
         <tbody>
           {filteredEvents.length > 0 ? (
             filteredEvents.map((event) => (
-              <tr key={event.id} className="hover:bg-gray-50">
+              <tr
+                key={event.id}
+                className={`hover:bg-gray-50 cursor-pointer ${selectedEventId === event.id ? "bg-blue-50" : ""}`}
+                onClick={() => setSelectedEventId(event.id)}
+              >
                 <td className="p-2 border">{event.title}</td>
                 <td className="p-2 border">{event.college}</td>
                 <td className="p-2 border">{event.venue}</td>
                 <td className="p-2 border">{event.date}</td>
                 <td className="p-2 border">{event.status}</td>
-                <td className="p-2 border space-x-2">
-                  {event.status === "Pending" && (
-                    <>
-                      <button
-                        onClick={() => updateEventStatus(event.id, "Approved")}
-                        className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-                      >
-                        Approve
-                      </button>
-                      <button
-                        onClick={() => updateEventStatus(event.id, "Rejected")}
-                        className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                      >
-                        Reject
-                      </button>
-                    </>
-                  )}
+                <td className="p-2 border">
+                  <div className="flex flex-wrap gap-2">
+                    {event.status === "Pending" && (
+                      <>
+                        <button
+                          onClick={(ev) => { ev.stopPropagation(); updateEventStatus(event.id, "Approved"); }}
+                          className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                        >
+                          Approve
+                        </button>
+                        <button
+                          onClick={(ev) => { ev.stopPropagation(); updateEventStatus(event.id, "Rejected"); }}
+                          className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                        >
+                          Reject
+                        </button>
+                      </>
+                    )}
+
+                    <button
+                      onClick={(ev) => { ev.stopPropagation(); navigate(`/contracts?eventId=${event.id}`); }}
+                      className="px-3 py-1 rounded border"
+                      title="Generate contract for this event"
+                    >
+                      Contract
+                    </button>
+
+                    <button
+                      onClick={(ev) => { ev.stopPropagation(); navigate(`/invoices?eventId=${event.id}`); }}
+                      className="px-3 py-1 rounded border"
+                      title="Create invoices for this event"
+                    >
+                      Invoices
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))

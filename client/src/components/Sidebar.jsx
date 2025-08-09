@@ -1,13 +1,15 @@
-// Sidebar.jsx
 import React from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom"; // ✅ added useNavigate
+import { NavLink, useLocation, useNavigate } from "react-router-dom"; 
 import { useRole } from "../contexts/RoleContext";
 
 const allNavItems = {
   public: [{ path: "/public", label: "Public Calendar" }],
   eventManager: [
-    { path: "/manager", label: "Event Manager" },
+    { path: "/event-manager", label: "Event Manager" },
     { path: "/manager/create", label: "Create Event" },
+    { path: "/venues", label: "Venue Inventory" },
+    { path: "/breakout-sessions", label: "Breakout Sessions" }, // shared with admin
+    { path: "/mobile-app", label: "Mobile App" }, // shared with admin
   ],
   admin: [
     { path: "/admin", label: "Admin Dashboard" },
@@ -19,7 +21,13 @@ const allNavItems = {
     { path: "/crm", label: "CRM" },
     { path: "/resources", label: "Resource Management" },
     { path: "/reports", label: "Reports" },
-    { path: "/accessibility-demo", label: "Accessibility" }
+    { path: "/accessibility-demo", label: "Accessibility" },
+    { path: "/venues", label: "Venue Inventory" },
+    { path: "/breakout-sessions", label: "Breakout Sessions" },
+    { path: "/mobile-app", label: "Mobile App" },
+    { path: "/security-settings", label: "Security Settings" },
+    { path: "/data-migration", label: "Data Migration" },
+    { path: "/compliance", label: "Compliance" },
   ],
   default: [
     { path: "/login", label: "Login" },
@@ -30,7 +38,7 @@ const allNavItems = {
 export default function Sidebar() {
   const { role, setRole } = useRole();
   const location = useLocation();
-  const navigate = useNavigate(); // ✅ initialize navigate
+  const navigate = useNavigate(); // 
   const navItems = allNavItems[role] || allNavItems.default;
 
   return (

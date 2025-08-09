@@ -1,43 +1,140 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRole } from "../contexts/RoleContext";
 
 export default function Login() {
-  const [selectedRole, setSelectedRole] = useState("public");
   const { setRole } = useRole();
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    setRole(selectedRole);
+  const handleLogin = (role) => {
+    setRole(role);
+    if (role === "admin") {
+      navigate("/admin");
+    } else if (role === "eventManager") {
+      navigate("/event-manager");
+    } else {
+      navigate("/public");
+    }
+  };
 
-    if (selectedRole === "admin") navigate("/admin");
-    else if (selectedRole === "eventManager") navigate("/manager");
-    else navigate("/public");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Demo only — match sample creds
+    if (email === "admin@vccs.edu" && password === "admin123") {
+      handleLogin("admin");
+    } else if (email === "manager@vccs.edu" && password === "manager123") {
+      handleLogin("eventManager");
+    } else if (email === "student@vccs.edu" && password === "student123") {
+      handleLogin("public");
+    } else {
+      alert("Invalid credentials. Please try again.");
+    }
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Login as...</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="max-w-md w-full space-y-8 bg-white shadow-lg rounded-lg p-8 border border-gray-200">
+        
+        {/* Header */}
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-800">
+            VCCS Event & Venue Management System
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Virginia Community College System — 2025
+          </p>
+        </div>
 
-        <select
-          value={selectedRole}
-          onChange={(e) => setSelectedRole(e.target.value)}
-          className="w-full p-3 border border-gray-300 rounded-md mb-4"
-        >
-          <option value="public">Public Viewer</option>
-          <option value="eventManager">Event Manager</option>
-          <option value="admin">Admin</option>
-        </select>
+        {/* Login Form */}
+        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Email Address
+            </label>
+            <input
+              type="email"
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:border-blue-500"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@vccs.edu"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <input
+              type="password"
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:border-blue-500"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+          >
+            Sign In
+          </button>
+        </form>
 
-        <button
-          onClick={handleLogin}
-          className="w-full bg-blue-600 text-white p-3 rounded-md font-semibold hover:bg-blue-700 transition"
-        >
-          Continue
-        </button>
+        {/* Demo Mode */}
+        <div className="bg-gray-100 border border-gray-300 rounded-lg p-4">
+          <h3 className="text-sm font-semibold text-gray-700 mb-2">
+            Demo Mode
+          </h3>
+          <p className="text-xs text-gray-600 mb-3">
+            For demonstration purposes, you can log in as an Admin, Event Manager, or Student using the sample credentials below:
+          </p>
+          <div className="grid grid-cols-1 gap-3 text-sm">
+            <div className="bg-white border border-gray-300 rounded p-3">
+              <strong>Admin User</strong><br />
+              Email: admin@vccs.edu<br />
+              Password: admin123
+            </div>
+            <div className="bg-white border border-gray-300 rounded p-3">
+              <strong>Event Manager</strong><br />
+              Email: manager@vccs.edu<br />
+              Password: manager123
+            </div>
+            <div className="bg-white border border-gray-300 rounded p-3">
+              <strong>Student / Public User</strong><br />
+              Email: student@vccs.edu<br />
+              Password: student123
+            </div>
+          </div>
+          <div className="flex gap-2 mt-4">
+            <button
+              onClick={() => handleLogin("admin")}
+              className="flex-1 bg-gray-200 hover:bg-gray-300 text-sm py-1 rounded"
+            >
+              Admin Portal
+            </button>
+            <button
+              onClick={() => handleLogin("eventManager")}
+              className="flex-1 bg-gray-200 hover:bg-gray-300 text-sm py-1 rounded"
+            >
+              Manager Portal
+            </button>
+            <button
+              onClick={() => handleLogin("public")}
+              className="flex-1 bg-gray-200 hover:bg-gray-300 text-sm py-1 rounded"
+            >
+              Student Portal
+            </button>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center text-xs text-gray-500 mt-6">
+          &copy; 2025 Virginia Community College System — Event & Venue Management System
+        </div>
       </div>
-    </section>
+    </div>
   );
 }

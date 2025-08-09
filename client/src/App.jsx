@@ -5,8 +5,6 @@ import AdminDashboard from "./pages/AdminDashboard";
 import EventManager from "./pages/EventManager";
 import ManagerCreateEvent from "./pages/ManagerCreateEvent";
 import PublicView from "./pages/PublicView";
-import Sidebar from "./components/Sidebar";
-import ProtectedRoute from "./components/ProtectedRoute"; 
 import ReviewRequests from "./pages/ReviewRequests";
 import ContractGenerator from "./pages/ContractGenerator";
 import InvoiceManager from "./pages/InvoiceManager";
@@ -17,99 +15,205 @@ import ResourceManagement from "./pages/ResourceManagement";
 import Reports from "./pages/Reports";
 import AccessibilityDemo from "./pages/AccessibilityDemo";
 import EventRequestForm from "./pages/EventRequestForm";
+import EmailRegistrants from "./pages/EmailRegistrants";
+
+// New stub pages per RFP
+import Venues from "./pages/Venues";
+import BreakoutSessions from "./pages/BreakoutSessions";
+import MobileApp from "./pages/MobileApp";
+import SecuritySettings from "./pages/SecuritySettings";
+import DataMigration from "./pages/DataMigration";
+import Compliance from "./pages/Compliance";
+
+import Sidebar from "./components/Sidebar";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { EventProvider } from "./contexts/EventContext";
+
+function AppLayout({ children }) {
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      <Sidebar />
+      <main className="flex-1 p-6">{children}</main>
+    </div>
+  );
+}
 
 export default function App() {
   const location = useLocation();
-  const isAuthRoute = location.pathname === "/login";
+  const hideSidebar = location.pathname === "/login";
 
-  if (isAuthRoute) {
-    return (
-      <main className="min-h-screen flex items-center justify-center bg-gray-100">
+  return (
+    <EventProvider>
+      {hideSidebar ? (
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
-      </main>
-    );
-  }
-
-  return (
-    <EventProvider> {/* ✅ Wrap everything so PublicView has events */}
-      <div className="flex min-h-screen bg-light text-dark">
-        <Sidebar />
-        <main className="flex-1 p-6 overflow-y-auto">
+      ) : (
+        <AppLayout>
           <Routes>
-            <Route path="/" element={<Navigate to="/login" />} />
+            {/* Public routes */}
             <Route path="/public" element={<PublicView />} />
             <Route path="/request-event" element={<EventRequestForm />} />
 
-            {/* 🔐 Admin-only routes */}
-            <Route path="/admin" element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }/>
-            <Route path="/admin/requests" element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <ReviewRequests />
-              </ProtectedRoute>
-            }/>
-            <Route path="/contracts" element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <ContractGenerator />
-              </ProtectedRoute>
-            }/>
-            <Route path="/invoices" element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <InvoiceManager />
-              </ProtectedRoute>
-            }/>
-            <Route path="/registration" element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <RegistrationPage />
-              </ProtectedRoute>
-            }/>
-            <Route path="/speakers" element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <SpeakerBios />
-              </ProtectedRoute>
-            }/>
-            <Route path="/crm" element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <CRM />
-              </ProtectedRoute>
-            }/>
-            <Route path="/resources" element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <ResourceManagement />
-              </ProtectedRoute>
-            }/>
-            <Route path="/reports" element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <Reports />
-              </ProtectedRoute>
-            }/>
-            <Route path="/accessibility-demo" element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <AccessibilityDemo />
-              </ProtectedRoute>
-            }/>
+            {/* Admin */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/requests"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <ReviewRequests />
+                </ProtectedRoute>
+              }
+            />
 
-            {/* 🔐 Event Manager-only routes */}
-            <Route path="/manager" element={
-              <ProtectedRoute allowedRoles={["eventManager"]}>
-                <EventManager />
-              </ProtectedRoute>
-            }/>
-            <Route path="/manager/create" element={
-              <ProtectedRoute allowedRoles={["eventManager"]}>
-                <ManagerCreateEvent />
-              </ProtectedRoute>
-            }/>
+            {/* Event Manager */}
+            <Route
+              path="/event-manager"
+              element={
+                <ProtectedRoute allowedRoles={["eventManager"]}>
+                  <EventManager />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manager/create"
+              element={
+                <ProtectedRoute allowedRoles={["eventManager"]}>
+                  <ManagerCreateEvent />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/email-registrants"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "eventManager"]}>
+                  <EmailRegistrants />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Shared tools */}
+            <Route
+              path="/contracts"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "eventManager"]}>
+                  <ContractGenerator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/invoices"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "eventManager"]}>
+                  <InvoiceManager />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/registration"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "eventManager"]}>
+                  <RegistrationPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/crm"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "eventManager"]}>
+                  <CRM />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/resources"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "eventManager"]}>
+                  <ResourceManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/reports"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "eventManager"]}>
+                  <Reports />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/speakers"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "eventManager"]}>
+                  <SpeakerBios />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* RFP Stub Pages */}
+           <Route
+              path="/venues"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "eventManager"]}>
+                  <Venues />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/breakout-sessions"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "eventManager"]}>
+                  <BreakoutSessions />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/mobile-app"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "eventManager"]}>
+                  <MobileApp />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/security-settings"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <SecuritySettings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/data-migration"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <DataMigration />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/compliance"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <Compliance />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Misc */}
+            <Route path="/accessibility" element={<AccessibilityDemo />} />
+            <Route path="*" element={<Navigate to="/public" />} />
           </Routes>
-        </main>
-      </div>
+        </AppLayout>
+      )}
     </EventProvider>
   );
 }

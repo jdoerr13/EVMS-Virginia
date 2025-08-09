@@ -20,42 +20,47 @@ export default function AdminDashboard() {
   const [endDate, setEndDate] = React.useState("");
   const [importMessage, setImportMessage] = React.useState(null);
   const [importError, setImportError] = React.useState(null);
+  const seededRef = React.useRef(false);
 
   const { events, addEvent } = useEvents();
 
-  // Temporary fallback
-  if (events.length === 0) {
-    const fallbackEvents = [
-      {
-        id: 1,
-        title: "Welcome Orientation",
-        college: "Humanities",
-        venue: "Main Hall",
-        date: "2025-08-05",
-        status: "Approved",
-        requester: "admin@college.edu",
-      },
-      {
-        id: 2,
-        title: "Faculty Meeting",
-        college: "Sciences",
-        venue: "Auditorium",
-        date: "2025-08-10",
-        status: "Pending",
-        requester: "dean@college.edu",
-      },
-      {
-        id: 3,
-        title: "Research Showcase",
-        college: "Engineering",
-        venue: "Main Hall",
-        date: "2025-08-15",
-        status: "Rejected",
-        requester: "prof@college.edu",
-      },
-    ];
-    fallbackEvents.forEach(addEvent);
-  }
+  // Seed fallback events ONCE if empty to avoid duplicates
+  React.useEffect(() => {
+    if (seededRef.current) return;
+    if (events.length === 0) {
+      const fallbackEvents = [
+        {
+          id: 1,
+          title: "Welcome Orientation",
+          college: "Humanities",
+          venue: "Main Hall",
+          date: "2025-08-05",
+          status: "Approved",
+          requester: "admin@college.edu",
+        },
+        {
+          id: 2,
+          title: "Faculty Meeting",
+          college: "Sciences",
+          venue: "Auditorium",
+          date: "2025-08-10",
+          status: "Pending",
+          requester: "dean@college.edu",
+        },
+        {
+          id: 3,
+          title: "Research Showcase",
+          college: "Engineering",
+          venue: "Main Hall",
+          date: "2025-08-15",
+          status: "Rejected",
+          requester: "prof@college.edu",
+        },
+      ];
+      fallbackEvents.forEach(addEvent);
+      seededRef.current = true;
+    }
+  }, [events.length, addEvent]);
 
   const handleExport = () => downloadCSV(events);
 
@@ -99,7 +104,7 @@ export default function AdminDashboard() {
 
   filteredEvents.forEach((event) => {
     const venue = event.venue?.trim().toLowerCase();
-    const status = event.status;
+    const status = event.status || "Pending";
     if (venue) venueCounts[venue] = (venueCounts[venue] || 0) + 1;
     statusCounts[status] = (statusCounts[status] || 0) + 1;
   });
@@ -180,15 +185,19 @@ export default function AdminDashboard() {
             >
               <div>
                 <p className="font-semibold text-gray-800">{event.title}</p>
-                <p className="text-sm text-gray-500">{event.college} — {event.venue} — {event.date}</p>
+                <p className="text-sm text-gray-500">
+                  {event.college} — {event.venue} — {event.date}
+                </p>
               </div>
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                event.status === "Approved"
-                  ? "bg-green-100 text-green-700"
-                  : event.status === "Rejected"
-                  ? "bg-red-100 text-red-700"
-                  : "bg-yellow-100 text-yellow-700"
-              }`}>
+              <span
+                className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  event.status === "Approved"
+                    ? "bg-green-100 text-green-700"
+                    : event.status === "Rejected"
+                    ? "bg-red-100 text-red-700"
+                    : "bg-yellow-100 text-yellow-700"
+                }`}
+              >
                 {event.status}
               </span>
             </li>
@@ -214,15 +223,7 @@ export default function AdminDashboard() {
           <h2 className="text-lg font-semibold text-gray-700 mb-4">Events by Venue</h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
-              <Pie
-                data={venueData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={90}
-                label
-              >
+              <Pie data={venueData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} label>
                 {venueData.map((_, index) => (
                   <Cell key={index} fill={COLORS[index % COLORS.length]} />
                 ))}

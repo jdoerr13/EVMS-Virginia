@@ -1,20 +1,30 @@
-// src/context/EventContext.jsx
 import React, { createContext, useContext, useState } from "react";
 
 const EventContext = createContext();
 
-export function EventProvider({ children }) {
-  const [events, setEvents] = useState([
-    // ✅ RFP-style seeded events
+function seedEvents() {
+  return [
     {
       id: 1,
       title: "Fall Open House",
       college: "Tidewater Community College",
       venue: "Main Auditorium",
       date: "2025-09-15",
+      startTime: "10:00",
+      endTime: "14:00",
       description: "Tour campus facilities, meet faculty, and learn about programs.",
       status: "Pending",
-      requester: "manager@tcc.edu"
+      requester: "manager@tcc.edu",
+      sessions: [
+        { id: "s1", title: "Campus Tour", capacity: 40 },
+        { id: "s2", title: "Financial Aid Q&A", capacity: 60 },
+      ],
+      registrations: [
+        { name: "Alex Johnson", email: "alex.johnson@example.com" },
+        { name: "Maria Garcia", email: "maria.garcia@example.com" },
+        { name: "Liam Brown", email: "liam.brown@example.com" },
+      ],
+      docs: [],
     },
     {
       id: 2,
@@ -22,114 +32,134 @@ export function EventProvider({ children }) {
       college: "Northern Virginia Community College",
       venue: "Exhibit Hall",
       date: "2025-10-05",
-      description: "Over 50 employers from the region recruiting students.",
+      startTime: "09:00",
+      endTime: "16:00",
+      description: "Meet employers and explore internship opportunities.",
       status: "Approved",
-      requester: "career@nvcc.edu"
+      requester: "jobs@nvc.edu",
+      sessions: [],
+      registrations: [
+        { name: "Sarah Lee", email: "sarah.lee@example.com" },
+        { name: "David Kim", email: "david.kim@example.com" },
+      ],
+      docs: [],
     },
     {
       id: 3,
-      title: "STEM Innovation Conference",
-      college: "Blue Ridge Community College",
-      venue: "Science Building Room 101",
-      date: "2025-08-15",
-      description: "Workshops and talks on cutting-edge STEM research.",
+      title: "Winter Graduation Ceremony",
+      college: "Piedmont Virginia Community College",
+      venue: "Auditorium Hall",
+      date: "2025-12-12",
+      startTime: "13:00",
+      endTime: "16:00",
+      description: "Celebrate the achievements of our graduating students.",
       status: "Approved",
-      requester: "stem@brcc.edu"
+      requester: "events@pvcc.edu",
+      sessions: [],
+      registrations: [
+        { name: "Emily Davis", email: "emily.davis@example.com" },
+        { name: "Michael Thompson", email: "michael.thompson@example.com" },
+        { name: "Olivia Martinez", email: "olivia.martinez@example.com" },
+      ],
+      docs: [],
     },
     {
       id: 4,
-      title: "Faculty Professional Development Workshop",
+      title: "Arts & Culture Festival",
       college: "Virginia Western Community College",
-      venue: "Conference Room B",
-      date: "2025-08-20",
-      description: "Enhance teaching methods and student engagement strategies.",
+      venue: "Student Commons",
+      date: "2025-11-12",
+      startTime: "12:00",
+      endTime: "18:00",
+      description: "Live performances, art exhibits, and cultural food stalls.",
       status: "Pending",
-      requester: "facultydev@vwcc.edu"
+      requester: "arts@vwcc.edu",
+      sessions: [
+        { id: "s1", title: "Photography Workshop", capacity: 30 },
+        { id: "s2", title: "Dance Performance", capacity: 100 },
+      ],
+      registrations: [
+        { name: "Sophie Walker", email: "sophie.walker@example.com" },
+      ],
+      docs: [],
     },
     {
       id: 5,
-      title: "Cultural Heritage Festival",
+      title: "Healthcare Career Expo",
       college: "Piedmont Virginia Community College",
-      venue: "Outdoor Quad",
+      venue: "Nursing Building Auditorium",
       date: "2025-09-28",
-      description: "Celebrate cultures through food, music, and dance.",
+      startTime: "08:30",
+      endTime: "15:00",
+      description: "Meet healthcare recruiters and learn about nursing programs.",
       status: "Approved",
-      requester: "events@pvcc.edu"
+      requester: "health@pvcc.edu",
+      sessions: [
+        { id: "s1", title: "CPR Training Demo", capacity: 40 },
+        { id: "s2", title: "Meet the Nurses Panel", capacity: 80 },
+      ],
+      registrations: [
+        { name: "Chris Allen", email: "chris.allen@example.com" },
+      ],
+      docs: [],
     },
-    {
-      id: 6,
-      title: "Women's Leadership Panel",
-      college: "Tidewater Community College",
-      venue: "Library Conference Center",
-      date: "2025-10-12",
-      description: "Hear from women leaders in business, politics, and STEM.",
-      status: "Pending",
-      requester: "leadership@tcc.edu"
-    },
-    {
-      id: 7,
-      title: "Basketball Season Opener",
-      college: "Northern Virginia Community College",
-      venue: "Sports Arena",
-      date: "2025-11-02",
-      description: "Kick-off game for the fall basketball season.",
-      status: "Approved",
-      requester: "athletics@nvcc.edu"
-    },
-    {
-      id: 8,
-      title: "Annual Scholarship Banquet",
-      college: "Blue Ridge Community College",
-      venue: "Dining Hall",
-      date: "2025-09-18",
-      description: "Recognizing student achievements and donors.",
-      status: "Approved",
-      requester: "foundation@brcc.edu"
-    },
-    {
-      id: 9,
-      title: "IT Career Bootcamp",
-      college: "Virginia Western Community College",
-      venue: "Computer Lab 3",
-      date: "2025-09-25",
-      description: "Intensive training for careers in IT and cybersecurity.",
-      status: "Pending",
-      requester: "itdept@vwcc.edu"
-    },
-    {
-      id: 10,
-      title: "Music Faculty Recital",
-      college: "Piedmont Virginia Community College",
-      venue: "Music Hall",
-      date: "2025-08-30",
-      description: "An evening performance by music faculty members.",
-      status: "Approved",
-      requester: "music@pvcc.edu"
-    }
-  ]);
+  ];
+}
+
+export function EventProvider({ children }) {
+  const [events, setEvents] = useState(seedEvents());
 
   const addEvent = (event) => {
+    const id = Date.now();
     setEvents((prev) => [
       ...prev,
       {
-        id: Date.now(),
+        id,
         ...event,
         status: event.status || "Pending",
-        requester: event.requester || "manager@vccs.edu"
-      }
+        requester: event.requester || "manager@vccs.edu",
+        sessions: event.sessions || [],
+        registrations: [],
+        docs: [],
+      },
     ]);
   };
 
-  const updateEventStatus = (id, newStatus) => {
+  const addRegistration = (eventId, registration) => {
     setEvents((prev) =>
-      prev.map((event) =>
-        event.id === id ? { ...event, status: newStatus } : event
+      prev.map((evt) =>
+        evt.id === eventId
+          ? {
+              ...evt,
+              registrations: [
+                ...(evt.registrations || []),
+                { ...registration, dateRegistered: new Date().toISOString() },
+              ],
+            }
+          : evt
       )
     );
   };
 
+  const updateEventStatus = (id, newStatus) => {
+    setEvents((prev) =>
+      prev.map((event) => (event.id === id ? { ...event, status: newStatus } : event))
+    );
+  };
+
+  const addDoc = (eventId, doc) => {
+    setEvents((prev) =>
+      prev.map((e) => {
+        if (e.id !== eventId) return e;
+        return { ...e, docs: [...(e.docs || []), doc] };
+      })
+    );
+  };
+
   return (
-    <EventContext.Provider value={{ events, addEvent, updateEventStatus }}>
+    <EventContext.Provider
+      value={{ events, addEvent, updateEventStatus, addRegistration, addDoc }}
+    >
       {children}
     </EventContext.Provider>
   );
