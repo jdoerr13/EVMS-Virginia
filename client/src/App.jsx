@@ -16,8 +16,9 @@ import Reports from "./pages/Reports";
 import AccessibilityDemo from "./pages/AccessibilityDemo";
 import EventRequestForm from "./pages/EventRequestForm";
 import EmailRegistrants from "./pages/EmailRegistrants";
+import StudentDashboard from "./pages/StudentDashboard"; // NEW
 
-// New stub pages per RFP
+// RFP Pages
 import Venues from "./pages/Venues";
 import BreakoutSessions from "./pages/BreakoutSessions";
 import MobileApp from "./pages/MobileApp";
@@ -54,7 +55,10 @@ export default function App() {
           <Routes>
             {/* Public routes */}
             <Route path="/public" element={<PublicView />} />
+            <Route path="/student" element={<StudentDashboard />} /> {/* NEW */}
             <Route path="/request-event" element={<EventRequestForm />} />
+            <Route path="/speakers" element={<SpeakerBios />} />
+            <Route path="/registration" element={<RegistrationPage />} />
 
             {/* Admin */}
             <Route
@@ -100,7 +104,7 @@ export default function App() {
               }
             />
 
-            {/* Shared tools */}
+            {/* Shared Tools */}
             <Route
               path="/contracts"
               element={
@@ -114,14 +118,6 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={["admin", "eventManager"]}>
                   <InvoiceManager />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/registration"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "eventManager"]}>
-                  <RegistrationPage />
                 </ProtectedRoute>
               }
             />
@@ -149,17 +145,9 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/speakers"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "eventManager"]}>
-                  <SpeakerBios />
-                </ProtectedRoute>
-              }
-            />
 
-            {/* RFP Stub Pages */}
-           <Route
+            {/* RFP Pages */}
+            <Route
               path="/venues"
               element={
                 <ProtectedRoute allowedRoles={["admin", "eventManager"]}>
@@ -209,7 +197,7 @@ export default function App() {
             />
 
             {/* Misc */}
-            <Route path="/accessibility" element={<AccessibilityDemo />} />
+            <Route path="/accessibility-demo" element={<AccessibilityDemo />} />
             <Route path="*" element={<Navigate to="/public" />} />
           </Routes>
         </AppLayout>

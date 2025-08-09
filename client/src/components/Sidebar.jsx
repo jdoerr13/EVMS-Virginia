@@ -3,19 +3,24 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useRole } from "../contexts/RoleContext";
 
 const allNavItems = {
-  public: [{ path: "/public", label: "Public Calendar" }],
+  public: [
+    { path: "/public", label: "Public Calendar" },
+    { path: "/student", label: "Student Dashboard" },
+    // { path: "/registration", label: "My Registrations" },
+    { path: "/speakers", label: "About Performers" }
+  ],
   eventManager: [
-  { path: "/event-manager", label: "Event Manager Dash" },
-  { path: "/manager/create", label: "Create Event" },
-  { path: "/venues", label: "Venue Inventory" },
-  { path: "/registration", label: "Registration" },
-  { path: "/speakers", label: "Speaker Bios" },
-  { path: "/crm", label: "CRM" },
-  { path: "/resources", label: "Resource Management" },
-  { path: "/reports", label: "Reports" },
-  { path: "/breakout-sessions", label: "Breakout Sessions" },
-  { path: "/mobile-app", label: "Mobile App" },
-],
+    { path: "/event-manager", label: "Event Manager Dash" },
+    { path: "/manager/create", label: "Create Event" },
+    { path: "/venues", label: "Venue Inventory" },
+    { path: "/registration", label: "Registration" },
+    { path: "/speakers", label: "Speaker Bios" },
+    { path: "/crm", label: "CRM" },
+    { path: "/resources", label: "Resource Management" },
+    { path: "/reports", label: "Reports" },
+    { path: "/breakout-sessions", label: "Breakout Sessions" },
+    { path: "/mobile-app", label: "Mobile App" },
+  ],
   admin: [
     { path: "/admin", label: "Admin Dashboard" },
     { path: "/admin/requests", label: "Review Requests" },
@@ -43,13 +48,17 @@ const allNavItems = {
 export default function Sidebar() {
   const { role, setRole } = useRole();
   const location = useLocation();
-  const navigate = useNavigate(); // 
+  const navigate = useNavigate();
   const navItems = allNavItems[role] || allNavItems.default;
 
   return (
-    <aside className="w-64 bg-gray-900 text-white min-h-screen flex flex-col justify-between p-6 shadow-xl">
+    <aside className="w-64 bg-gradient-to-b from-blue-900 to-gray-900 text-white min-h-screen flex flex-col justify-between p-6 shadow-xl">
       <div>
-        <h2 className="text-2xl font-bold mb-8 tracking-wide text-blue-400">EVMS</h2>
+        {/* Logo/Brand */}
+        <div className="flex items-center gap-2 mb-8">
+          <h2 className="text-2xl font-bold tracking-wide text-blue-300">EVMS</h2>
+        </div>
+
         <nav className="space-y-2">
           {navItems.map(({ path, label }) => {
             const isActive =
@@ -72,11 +81,11 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* 🔴 Logout fixed at bottom */}
+      {/* Logout */}
       <button
         onClick={() => {
           setRole(null);
-          navigate("/login"); // ✅ use navigate instead of window.location.href
+          navigate("/login");
         }}
         className="w-full bg-red-600 text-white py-2 rounded-md font-semibold hover:bg-red-700 transition"
       >

@@ -162,6 +162,18 @@ function seedEvents() {
       ],
       docs: [],
     },
+    {
+  id: 99,
+  title: "AI & Future Tech Expo",
+  college: "Virtual Community College",
+  venue: "Innovation Hall",
+  date: "2025-10-20",
+  startTime: "09:00",
+  endTime: "17:00",
+  description: "Explore the latest in AI, robotics, and future technologies.",
+  status: "Approved",
+  requester: "ai-tech@vccs.edu"
+}
   ];
 }
 
