@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEvents } from "../contexts/EventContext";
+import { useAuth } from "../contexts/AuthContext";
 import { Disclosure, Dialog } from "@headlessui/react";
 import {
   ChevronUpIcon,
@@ -30,6 +31,7 @@ function getStatusClasses(status) {
 export default function StudentDashboard() {
   const navigate = useNavigate();
   const { events } = useEvents();
+  const { user, logout } = useAuth();
   const today = new Date();
 
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -46,12 +48,24 @@ export default function StudentDashboard() {
           <h1 className="text-3xl font-bold text-zinc-800">My Student Dashboard</h1>
           <p className="text-zinc-500">Your registered events & passes</p>
         </div>
-        <button
-          onClick={() => navigate("/public")}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
-        >
-          Browse All Events
-        </button>
+        <div className="flex items-center space-x-4">
+          <span className="text-sm text-gray-600">Welcome, {user?.name || 'Student'}</span>
+          <button
+            onClick={() => navigate("/public")}
+            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
+          >
+            Browse All Events
+          </button>
+          <button
+            onClick={() => {
+              logout();
+              navigate("/login");
+            }}
+            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+          >
+            Logout
+          </button>
+        </div>
       </header>
 
       {/* UPCOMING EVENTS ACCORDION */}

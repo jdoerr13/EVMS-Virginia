@@ -1,10 +1,12 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useEvents } from "../contexts/EventContext";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function EventManager() {
   const navigate = useNavigate();
   const { events, updateEventStatus } = useEvents();
+  const { user, logout } = useAuth();
   const [filterStatus, setFilterStatus] = useState("All");
   const [search, setSearch] = useState("");
   const [selectedEventId, setSelectedEventId] = useState(null);
@@ -98,7 +100,20 @@ export default function EventManager() {
   return (
     <div className="p-6 bg-white shadow rounded-lg space-y-6">
       <header className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Event Manager</h2>
+        <div className="flex items-center space-x-4">
+          <h1 className="text-2xl font-bold text-gray-800">Event Manager Dashboard</h1>
+          <span className="text-sm text-gray-600">Welcome, {user?.name || 'Event Manager'}</span>
+        </div>
+        <button
+          onClick={() => {
+            logout();
+            navigate("/login");
+          }}
+          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+        >
+          Logout
+                </button>
+      </header>
 
         {/* Shortcuts use selectedEventId */}
         <div className="flex flex-wrap gap-2">
