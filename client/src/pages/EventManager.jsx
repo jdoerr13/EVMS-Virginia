@@ -115,32 +115,32 @@ export default function EventManager() {
                 </button>
       </header>
 
-        {/* Shortcuts use selectedEventId */}
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => navigate("/manager/create")}
-            className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
-          >
-            Create Event
-          </button>
+      {/* Shortcuts use selectedEventId */}
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => navigate("/manager/create")}
+          className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+        >
+          Create Event
+        </button>
 
-          <button
-            onClick={gotoContract}
-            disabled={!selectedEvent}
-            className="px-3 py-2 rounded border disabled:opacity-50"
-            title={!selectedEvent ? "Select an event row first" : "Generate contract for selected"}
-          >
-            Generate Contract
-          </button>
+        <button
+          onClick={gotoContract}
+          disabled={!selectedEvent}
+          className="px-3 py-2 rounded border disabled:opacity-50"
+          title={!selectedEvent ? "Select an event row first" : "Generate contract for selected"}
+        >
+          Generate Contract
+        </button>
 
-          <button
-            onClick={gotoInvoices}
-            disabled={!selectedEvent}
-            className="px-3 py-2 rounded border disabled:opacity-50"
-            title={!selectedEvent ? "Select an event row first" : "Create invoices for selected"}
-          >
-            Create Invoice
-          </button>
+        <button
+          onClick={gotoInvoices}
+          disabled={!selectedEvent}
+          className="px-3 py-2 rounded border disabled:opacity-50"
+          title={!selectedEvent ? "Select an event row first" : "Create invoices for selected"}
+        >
+          Create Invoice
+        </button>
 
         <button
           onClick={gotoEmailRegistrants}
@@ -150,8 +150,7 @@ export default function EventManager() {
         >
           Email Registrants
         </button>
-        </div>
-      </header>
+      </div>
 
       {/* Selection hint */}
       <div className="text-sm text-gray-600">

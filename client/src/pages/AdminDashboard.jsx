@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { downloadCSV, parseCSV } from "../utils/csvUtils";
 import { useEvents } from "../contexts/EventContext";
 import { useAuth } from "../contexts/AuthContext";
-import { generateICS } from "../utils/ics";
+import { icsForEvents } from "../utils/ics";
 import {
   BarChart,
   Bar,
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
   };
 
   const handleAddToCalendar = (event) => {
-    const icsData = generateICS([event]);
+    const icsData = icsForEvents([event]);
     const blob = new Blob([icsData], { type: 'text/calendar' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -141,7 +141,7 @@ export default function AdminDashboard() {
 
   const handleExportCalendar = () => {
     const approvedEvents = events.filter(event => event.status === 'Approved');
-    const icsData = generateICS(approvedEvents);
+    const icsData = icsForEvents(approvedEvents);
     const blob = new Blob([icsData], { type: 'text/calendar' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
