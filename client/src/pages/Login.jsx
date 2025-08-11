@@ -37,6 +37,35 @@ export default function Login() {
     }
   };
 
+  const handleDemoLogin = async (role) => {
+    setIsSubmitting(true);
+    clearError();
+    
+    try {
+      let demoCredentials;
+      switch (role) {
+        case "admin":
+          demoCredentials = { email: "admin@vccs.edu", password: "admin123" };
+          break;
+        case "eventManager":
+          demoCredentials = { email: "manager@vccs.edu", password: "manager123" };
+          break;
+        case "public":
+          demoCredentials = { email: "student@vccs.edu", password: "student123" };
+          break;
+        default:
+          return;
+      }
+      
+      await login(demoCredentials);
+      // Navigation will be handled by useEffect above
+    } catch (error) {
+      console.error('Demo login failed:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="max-w-md w-full space-y-8 bg-white shadow-lg rounded-lg p-8 border border-gray-200">
@@ -121,19 +150,19 @@ export default function Login() {
           </div>
           <div className="flex gap-2 mt-4">
             <button
-              onClick={() => handleLogin("admin")}
+              onClick={() => handleDemoLogin("admin")}
               className="flex-1 bg-gray-200 hover:bg-gray-300 text-sm py-1 rounded"
             >
               Admin Portal
             </button>
             <button
-              onClick={() => handleLogin("eventManager")}
+              onClick={() => handleDemoLogin("eventManager")}
               className="flex-1 bg-gray-200 hover:bg-gray-300 text-sm py-1 rounded"
             >
               Manager Portal
             </button>
             <button
-              onClick={() => handleLogin("public")}
+              onClick={() => handleDemoLogin("public")}
               className="flex-1 bg-gray-200 hover:bg-gray-300 text-sm py-1 rounded"
             >
               Student Portal
