@@ -1,11 +1,12 @@
 // src/pages/ResourceManagement.jsx
 import React, { useState } from "react";
-import { useRole } from "../contexts/RoleContext";
+import { useAuth } from "../contexts/AuthContext";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 
 export default function ResourceManagement() {
-  const { role } = useRole();
+  const { user } = useAuth();
+  const role = user?.role;
 
   const [resourceType, setResourceType] = useState("Audio/Visual");
   const [dateRange, setDateRange] = useState({ start: "", end: "" });

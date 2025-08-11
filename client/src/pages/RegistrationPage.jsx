@@ -2,12 +2,13 @@
 import React, { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEvents } from "../contexts/EventContext";
-import { useRole } from "../contexts/RoleContext";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function RegistrationPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { role } = useRole();
+  const { user } = useAuth();
+  const role = user?.role;
   const { events, addRegistration } = useEvents();
 
   const eventIdParam = new URLSearchParams(location.search).get("eventId");

@@ -1,6 +1,6 @@
 // src/pages/SpeakerBios.jsx
 import React, { useState } from "react";
-import { useRole } from "../contexts/RoleContext";
+import { useAuth } from "../contexts/AuthContext";
 
 // Reusable modal component
 function Modal({ show, onClose, children }) {
@@ -150,7 +150,8 @@ function generateMockProfile() {
 }
 
 export default function SpeakerBios() {
-  const { role } = useRole();
+  const { user } = useAuth();
+  const role = user?.role;
   const [profiles, setProfiles] = useState(initialProfiles);
   const [search, setSearch] = useState("");
   const [filterRole, setFilterRole] = useState("");

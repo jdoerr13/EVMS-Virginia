@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom"; 
-import { useRole } from "../contexts/RoleContext";
+import { useAuth } from "../contexts/AuthContext";
 
 const allNavItems = {
   public: [
@@ -46,9 +46,10 @@ const allNavItems = {
 };
 
 export default function Sidebar() {
-  const { role, setRole } = useRole();
+  const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const role = user?.role || 'default';
   const navItems = allNavItems[role] || allNavItems.default;
 
   return (
@@ -84,7 +85,7 @@ export default function Sidebar() {
       {/* Logout */}
       <button
         onClick={() => {
-          setRole(null);
+          logout();
           navigate("/login");
         }}
         className="w-full bg-red-600 text-white py-2 rounded-md font-semibold hover:bg-red-700 transition"

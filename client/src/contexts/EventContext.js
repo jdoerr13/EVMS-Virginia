@@ -194,7 +194,25 @@ export function EventProvider({ children }) {
       setLoading(true);
       setError(null);
       const data = await eventsAPI.getAll();
-      setEvents(data);
+      
+      // Transform API data to match frontend format
+      const transformedEvents = data.map(event => ({
+        id: event.id,
+        title: event.title,
+        college: event.college || 'VCCS',
+        venue: event.venue || 'TBD',
+        date: event.date,
+        startTime: event.start_time?.substring(0, 5) || 'TBD',
+        endTime: event.end_time?.substring(0, 5) || 'TBD',
+        description: event.description || '',
+        status: event.status || 'Pending',
+        requester: event.requester_name || 'vccs@vccs.edu',
+        sessions: [],
+        registrations: [],
+        docs: []
+      }));
+      
+      setEvents(transformedEvents);
     } catch (error) {
       console.error('Failed to load events:', error);
       setError('Failed to load events');

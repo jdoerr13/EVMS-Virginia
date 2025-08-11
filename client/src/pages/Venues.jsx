@@ -1,6 +1,6 @@
 // src/pages/Venues.jsx
 import React, { useState } from "react";
-import { useRole } from "../contexts/RoleContext";
+import { useAuth } from "../contexts/AuthContext";
 
 // Seed mock venues
 const seedVenues = () => [
@@ -77,7 +77,8 @@ const seedVenues = () => [
 ];
 
 export default function Venues() {
-  const { role } = useRole();
+  const { user } = useAuth();
+  const role = user?.role;
   const [venues, setVenues] = useState(seedVenues());
   const [search, setSearch] = useState("");
   const [selectedVenue, setSelectedVenue] = useState(null);

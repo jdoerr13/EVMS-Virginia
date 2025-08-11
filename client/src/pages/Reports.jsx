@@ -1,11 +1,12 @@
 // src/pages/Reports.jsx
 import React, { useState } from "react";
-import { useRole } from "../contexts/RoleContext";
+import { useAuth } from "../contexts/AuthContext";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 
 export default function Reports() {
-  const { role } = useRole();
+  const { user } = useAuth();
+  const role = user?.role;
 
   // Filters
   const [reportType, setReportType] = useState("Attendance");

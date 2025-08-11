@@ -1,11 +1,12 @@
 // src/pages/CRM.jsx
 import React, { useState } from "react";
-import { useRole } from "../contexts/RoleContext";
+import { useAuth } from "../contexts/AuthContext";
 import { Bar } from "react-chartjs-2";
 import "chart.js/auto";
 
 export default function CRM() {
-  const { role } = useRole();
+  const { user } = useAuth();
+  const role = user?.role;
 
   const [searchTerm, setSearchTerm] = useState("");
   const [stage, setStage] = useState("All");
