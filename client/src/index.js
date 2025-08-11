@@ -3,18 +3,18 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./index.css";
-import { RoleProvider } from "./contexts/RoleContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import { EventProvider } from "./contexts/EventContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <RoleProvider>
+      <AuthProvider>
         <EventProvider> 
           <App />
         </EventProvider>
-      </RoleProvider>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
