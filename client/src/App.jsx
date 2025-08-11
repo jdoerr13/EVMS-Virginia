@@ -29,6 +29,7 @@ import Compliance from "./pages/Compliance";
 import Sidebar from "./components/Sidebar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { EventProvider } from "./contexts/EventContext";
+import { AuthProvider } from "./contexts/AuthContext";
 
 function AppLayout({ children }) {
   return (
@@ -44,7 +45,8 @@ export default function App() {
   const hideSidebar = location.pathname === "/login";
 
   return (
-    <EventProvider>
+    <AuthProvider>
+      <EventProvider>
       {hideSidebar ? (
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -202,6 +204,7 @@ export default function App() {
           </Routes>
         </AppLayout>
       )}
-    </EventProvider>
+      </EventProvider>
+    </AuthProvider>
   );
 }

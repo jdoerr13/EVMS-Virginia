@@ -1,35 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRole } from "../contexts/RoleContext";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Login() {
-  const { setRole } = useRole();
+  const { login, user, loading, error, clearError } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleLogin = (role) => {
-    setRole(role);
-    if (role === "admin") {
-      navigate("/admin");
-    } else if (role === "eventManager") {
-      navigate("/event-manager");
-    } else {
-      navigate("/public");
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      if (user.role === "admin") {
+        navigate("/admin");
+      } else if (user.role === "eventManager") {
+        navigate("/event-manager");
+      } else {
+        navigate("/public");
+      }
     }
-  };
+  }, [user, navigate]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Demo only — match sample creds
-    if (email === "admin@vccs.edu" && password === "admin123") {
-      handleLogin("admin");
-    } else if (email === "manager@vccs.edu" && password === "manager123") {
-      handleLogin("eventManager");
-    } else if (email === "student@vccs.edu" && password === "student123") {
-      handleLogin("public");
-    } else {
-      alert("Invalid credentials. Please try again.");
+    setIsSubmitting(true);
+    clearError();
+    
+    try {
+      await login({ email, password });
+      // Navigation will be handled by useEffect above
+    } catch (error) {
+      console.error('Login failed:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -75,11 +79,17 @@ export default function Login() {
               placeholder="••••••••"
             />
           </div>
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+              {error}
+            </div>
+          )}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+            disabled={isSubmitting || loading}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed"
           >
-            Sign In
+            {isSubmitting ? "Signing In..." : "Sign In"}
           </button>
         </form>
 
@@ -95,7 +105,8 @@ export default function Login() {
             <div className="bg-white border border-gray-300 rounded p-3">
               <strong>Admin User</strong><br />
               Email: admin@vccs.edu<br />
-              Password: admin123
+              Password: admin123<br />
+              <span className="text-xs text-gray-500">(Backend API)</span>
             </div>
             <div className="bg-white border border-gray-300 rounded p-3">
               <strong>Event Manager</strong><br />

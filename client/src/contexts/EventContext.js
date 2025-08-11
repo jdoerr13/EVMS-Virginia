@@ -1,7 +1,9 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { eventsAPI, registrationsAPI, documentsAPI } from '../utils/api';
 
 const EventContext = createContext();
 
+// Keep the seed events as fallback for development
 function seedEvents() {
   return [
     // --- Your existing events ---
@@ -178,58 +180,102 @@ function seedEvents() {
 }
 
 export function EventProvider({ children }) {
-  const [events, setEvents] = useState(seedEvents());
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const addEvent = (event) => {
-    const id = Date.now();
-    setEvents((prev) => [
-      ...prev,
-      {
-        id,
-        ...event,
-        status: event.status || "Pending",
-        requester: event.requester || "manager@vccs.edu",
-        sessions: event.sessions || [],
-        registrations: [],
-        docs: [],
-      },
-    ]);
+  // Load events from API on component mount
+  useEffect(() => {
+    loadEvents();
+  }, []);
+
+  const loadEvents = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await eventsAPI.getAll();
+      setEvents(data);
+    } catch (error) {
+      console.error('Failed to load events:', error);
+      setError('Failed to load events');
+      // Fallback to seed data for development
+      setEvents(seedEvents());
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const addRegistration = (eventId, registration) => {
-    setEvents((prev) =>
-      prev.map((evt) =>
-        evt.id === eventId
-          ? {
-              ...evt,
-              registrations: [
-                ...(evt.registrations || []),
-                { ...registration, dateRegistered: new Date().toISOString() },
-              ],
-            }
-          : evt
-      )
-    );
+  const addEvent = async (event) => {
+    try {
+      setError(null);
+      const newEvent = await eventsAPI.create(event);
+      setEvents((prev) => [...prev, newEvent]);
+      return newEvent;
+    } catch (error) {
+      setError('Failed to create event');
+      throw error;
+    }
   };
 
-  const updateEventStatus = (id, newStatus) => {
-    setEvents((prev) =>
-      prev.map((event) => (event.id === id ? { ...event, status: newStatus } : event))
-    );
+  const addRegistration = async (eventId, registration) => {
+    try {
+      setError(null);
+      const newRegistration = await registrationsAPI.create({
+        event_id: eventId,
+        ...registration
+      });
+      // Refresh events to get updated registration data
+      await loadEvents();
+      return newRegistration;
+    } catch (error) {
+      setError('Failed to add registration');
+      throw error;
+    }
   };
 
-  const addDoc = (eventId, doc) => {
-    setEvents((prev) =>
-      prev.map((e) => {
-        if (e.id !== eventId) return e;
-        return { ...e, docs: [...(e.docs || []), doc] };
-      })
-    );
+  const updateEventStatus = async (id, newStatus) => {
+    try {
+      setError(null);
+      await eventsAPI.updateStatus(id, newStatus);
+      setEvents((prev) =>
+        prev.map((event) => (event.id === id ? { ...event, status: newStatus } : event))
+      );
+    } catch (error) {
+      setError('Failed to update event status');
+      throw error;
+    }
+  };
+
+  const addDoc = async (eventId, file) => {
+    try {
+      setError(null);
+      const newDoc = await documentsAPI.upload(eventId, file);
+      setEvents((prev) =>
+        prev.map((e) => {
+          if (e.id !== eventId) return e;
+          return { ...e, docs: [...(e.docs || []), newDoc] };
+        })
+      );
+      return newDoc;
+    } catch (error) {
+      setError('Failed to upload document');
+      throw error;
+    }
   };
 
   return (
     <EventContext.Provider
-      value={{ events, addEvent, updateEventStatus, addRegistration, addDoc }}
+      value={{ 
+        events, 
+        loading, 
+        error, 
+        addEvent, 
+        updateEventStatus, 
+        addRegistration, 
+        addDoc,
+        loadEvents,
+        clearError: () => setError(null)
+      }}
     >
       {children}
     </EventContext.Provider>
