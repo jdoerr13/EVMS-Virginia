@@ -105,8 +105,8 @@ $env:PGPASSWORD = "your_password"
 psql -U postgres -c "CREATE DATABASE evms_db;"
 ```
 
-#### Database Migration
-Run the database migration to create all tables and sample data:
+#### Database Migration & Admin Setup
+Run the database migration and admin setup:
 
 ```bash
 # Using PowerShell with password
@@ -115,6 +115,9 @@ psql -U postgres -d evms_db -f db/schema.sql
 
 # Or using npm script (if configured correctly)
 npm run migrate
+
+# Setup admin system with demo users and VCCS data
+npm run setup-admin
 ```
 
 #### Start the Backend Server
