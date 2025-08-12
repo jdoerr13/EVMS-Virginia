@@ -102,12 +102,12 @@ export default function PublicView() {
       onClick={() => navigate("/speakers")}
       className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-50"
     >
-      {/* 🎤 Speaker Bios
+      🎤 Speaker Bios
     </button>
     <button
       onClick={() => navigate("/request-event")}
       className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-    > */}
+    >
       ✍️ Request an Event
     </button>
     <button
