@@ -264,6 +264,17 @@ export function EventProvider({ children }) {
     }
   };
 
+  const deleteEvent = async (id) => {
+    try {
+      setError(null);
+      await eventsAPI.delete(id);
+      setEvents((prev) => prev.filter((event) => event.id !== id));
+    } catch (error) {
+      setError('Failed to delete event');
+      throw error;
+    }
+  };
+
   const addDoc = async (eventId, file) => {
     try {
       setError(null);
@@ -289,6 +300,7 @@ export function EventProvider({ children }) {
         error, 
         addEvent, 
         updateEventStatus, 
+        deleteEvent,
         addRegistration, 
         addDoc,
         loadEvents,

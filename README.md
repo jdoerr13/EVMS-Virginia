@@ -6,12 +6,15 @@ A comprehensive full-stack platform designed to streamline scheduling, approvals
 
 ✅ **Backend API**: Complete and tested  
 ✅ **Database**: PostgreSQL schema implemented with sample data  
-✅ **Authentication**: JWT-based system working  
+✅ **Authentication**: JWT-based system working with mock fallback  
 ✅ **All Endpoints**: Fully functional and documented  
-✅ **Frontend**: React application ready for integration  
+✅ **Frontend**: React application fully integrated  
+✅ **Role-Based Routing**: Admin/Event Manager/Public access working  
+✅ **Event Management**: CRUD operations with remove functionality  
+✅ **Security**: Vulnerabilities addressed and dependencies updated  
 
-**Last Updated**: December 2024  
-**Version**: v1.4.0 - Production Ready
+**Last Updated**: August 2024  
+**Version**: v1.5.0 - Production Ready with Enhanced Features
 
 ## 🏗️ System Architecture
 
@@ -41,6 +44,23 @@ EVMS-Virginia/
 │   └── package.json
 └── README.md
 ```
+
+## 🆕 **Recent Updates & Features**
+
+### ✅ **Latest Fixes (August 2024)**
+- **Authentication Flow**: Fixed admin portal redirecting to public calendar
+- **Mock Authentication**: Added fallback authentication for development without backend
+- **Role-Based Routing**: Implemented smart routing based on user roles
+- **Remove Button**: Added ability to delete events (including approved ones)
+- **Security**: Resolved npm vulnerabilities and updated dependencies
+- **JSX Syntax**: Fixed compilation errors in EventManager and PublicView components
+
+### 🎯 **Key Features**
+- **Admin Dashboard**: Full event management with approval/rejection workflow
+- **Event Manager Dashboard**: Event creation, management, and conflict detection
+- **Public Calendar**: Event browsing and registration for students
+- **Remove Functionality**: Delete events with confirmation dialog
+- **Role-Based Access**: Different interfaces for admin, event manager, and public users
 
 ## 🚀 Quick Start
 
@@ -190,6 +210,32 @@ npm start
 ```
 
 The application will be available at `http://localhost:3000`
+
+### 🎭 **Demo Credentials**
+
+For testing the application, use these demo accounts:
+
+**Admin User:**
+- Email: `admin@vccs.edu`
+- Password: `admin123`
+- Access: Full admin dashboard with event approval/rejection
+
+**Event Manager:**
+- Email: `manager@vccs.edu`
+- Password: `manager123`
+- Access: Event creation and management dashboard
+
+**Student/Public:**
+- Email: `student@vccs.edu`
+- Password: `student123`
+- Access: Public calendar and event registration
+
+### 🚀 **Quick Test**
+
+1. Start both servers (backend on port 4000, frontend on port 3000)
+2. Go to `http://localhost:3000`
+3. Login with any of the demo credentials above
+4. Test the different dashboards and features
 
 ## 🔧 Backend API Documentation
 

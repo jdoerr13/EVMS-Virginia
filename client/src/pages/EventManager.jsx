@@ -5,7 +5,7 @@ import { useAuth } from "../contexts/AuthContext";
 
 export default function EventManager() {
   const navigate = useNavigate();
-  const { events, updateEventStatus } = useEvents();
+  const { events, updateEventStatus, deleteEvent } = useEvents();
   const { user, logout } = useAuth();
   const [filterStatus, setFilterStatus] = useState("All");
   const [search, setSearch] = useState("");
@@ -96,6 +96,21 @@ export default function EventManager() {
   if (!selectedEvent) return;
   navigate(`/email-registrants?eventId=${selectedEvent.id}`);
 };
+
+  const handleDeleteEvent = async (eventId) => {
+    if (window.confirm('Are you sure you want to delete this event? This action cannot be undone.')) {
+      try {
+        await deleteEvent(eventId);
+        // If the deleted event was selected, clear the selection
+        if (selectedEventId === eventId) {
+          setSelectedEventId(null);
+        }
+      } catch (error) {
+        console.error('Failed to delete event:', error);
+        alert('Failed to delete event. Please try again.');
+      }
+    }
+  };
 
   return (
     <div className="p-6 bg-white shadow rounded-lg space-y-6">
@@ -241,6 +256,13 @@ export default function EventManager() {
                     >
                       Reject
                     </button>
+                    <button
+                      onClick={(ev) => { ev.stopPropagation(); handleDeleteEvent(e.id); }}
+                      className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700"
+                      title="Remove this event"
+                    >
+                      Remove
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -329,6 +351,14 @@ export default function EventManager() {
                       title="Create invoices for this event"
                     >
                       Invoices
+                    </button>
+
+                    <button
+                      onClick={(ev) => { ev.stopPropagation(); handleDeleteEvent(event.id); }}
+                      className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                      title="Remove this event"
+                    >
+                      Remove
                     </button>
                   </div>
                 </td>

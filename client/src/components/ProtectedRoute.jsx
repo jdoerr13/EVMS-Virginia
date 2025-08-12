@@ -21,7 +21,15 @@ export default function ProtectedRoute({ children, allowedRoles }) {
 
   // Check if user has required role
   if (!allowedRoles.includes(user.role)) {
-    return <Navigate to="/login" replace />;
+    // Redirect to appropriate dashboard based on user's actual role
+    switch (user.role) {
+      case 'admin':
+        return <Navigate to="/admin" replace />;
+      case 'eventManager':
+        return <Navigate to="/event-manager" replace />;
+      default:
+        return <Navigate to="/public" replace />;
+    }
   }
 
   return children;

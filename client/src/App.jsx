@@ -1,5 +1,6 @@
 import React from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "./contexts/AuthContext";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import EventManager from "./pages/EventManager";
@@ -30,6 +31,24 @@ import Sidebar from "./components/Sidebar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { EventProvider } from "./contexts/EventContext";
 import { AuthProvider } from "./contexts/AuthContext";
+
+// Default redirect component that routes users to appropriate dashboard based on role
+function DefaultRedirect() {
+  const { user } = useAuth();
+  
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  switch (user.role) {
+    case 'admin':
+      return <Navigate to="/admin" replace />;
+    case 'eventManager':
+      return <Navigate to="/event-manager" replace />;
+    default:
+      return <Navigate to="/public" replace />;
+  }
+}
 
 function AppLayout({ children }) {
   return (
@@ -200,7 +219,9 @@ export default function App() {
 
             {/* Misc */}
             <Route path="/accessibility-demo" element={<AccessibilityDemo />} />
-            <Route path="*" element={<Navigate to="/public" />} />
+            
+            {/* Default redirect based on user role */}
+            <Route path="*" element={<DefaultRedirect />} />
           </Routes>
         </AppLayout>
       )}

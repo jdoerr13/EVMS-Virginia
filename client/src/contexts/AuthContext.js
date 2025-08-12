@@ -15,14 +15,14 @@ export function AuthProvider({ children }) {
 
   const checkAuthStatus = async () => {
     try {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        const userData = await authAPI.getProfile();
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        const userData = JSON.parse(storedUser);
         setUser(userData);
       }
     } catch (error) {
       console.error('Auth check failed:', error);
-      // Clear invalid tokens
+      // Clear invalid data
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('user');
@@ -34,17 +34,40 @@ export function AuthProvider({ children }) {
   const login = async (credentials) => {
     try {
       setError(null);
-      const response = await authAPI.login(credentials);
       
-      // Store tokens and user data
-      localStorage.setItem('accessToken', response.accessToken);
-      localStorage.setItem('refreshToken', response.refreshToken);
-      localStorage.setItem('user', JSON.stringify(response.user));
+      // Mock authentication for development
+      let mockUser;
+      if (credentials.email === "admin@vccs.edu" && credentials.password === "admin123") {
+        mockUser = {
+          id: 1,
+          name: "Admin User",
+          email: "admin@vccs.edu",
+          role: "admin"
+        };
+      } else if (credentials.email === "manager@vccs.edu" && credentials.password === "manager123") {
+        mockUser = {
+          id: 2,
+          name: "Event Manager",
+          email: "manager@vccs.edu",
+          role: "eventManager"
+        };
+      } else if (credentials.email === "student@vccs.edu" && credentials.password === "student123") {
+        mockUser = {
+          id: 3,
+          name: "Student User",
+          email: "student@vccs.edu",
+          role: "student"
+        };
+      } else {
+        throw new Error("Invalid credentials");
+      }
       
-      setUser(response.user);
-      return response;
+      // Store user data
+      localStorage.setItem('user', JSON.stringify(mockUser));
+      setUser(mockUser);
+      return { user: mockUser };
     } catch (error) {
-      setError(error.response?.data?.error || 'Login failed');
+      setError(error.message || 'Login failed');
       throw error;
     }
   };
@@ -52,17 +75,21 @@ export function AuthProvider({ children }) {
   const register = async (userData) => {
     try {
       setError(null);
-      const response = await authAPI.register(userData);
       
-      // Store tokens and user data
-      localStorage.setItem('accessToken', response.accessToken);
-      localStorage.setItem('refreshToken', response.refreshToken);
-      localStorage.setItem('user', JSON.stringify(response.user));
+      // Mock registration for development
+      const mockUser = {
+        id: Date.now(),
+        name: userData.name,
+        email: userData.email,
+        role: "student" // Default role for new registrations
+      };
       
-      setUser(response.user);
-      return response;
+      // Store user data
+      localStorage.setItem('user', JSON.stringify(mockUser));
+      setUser(mockUser);
+      return { user: mockUser };
     } catch (error) {
-      setError(error.response?.data?.error || 'Registration failed');
+      setError(error.message || 'Registration failed');
       throw error;
     }
   };

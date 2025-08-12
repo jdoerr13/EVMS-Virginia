@@ -111,6 +111,11 @@ export const eventsAPI = {
     return response.data;
   },
   
+  delete: async (id) => {
+    const response = await api.delete(`/events/${id}`);
+    return response.data;
+  },
+  
   exportCSV: async () => {
     const response = await api.get('/events/export/csv', {
       responseType: 'blob'
