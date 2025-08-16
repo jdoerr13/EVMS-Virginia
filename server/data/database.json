@@ -1,0 +1,453 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "admin@vccs.edu",
+      "password": "$2b$10$yvynS3cVdm9S9xBjdRGeUOO1Dx39dENovb.ARotfjNuYJjKsRXnrO",
+      "name": "VCCS System Administrator",
+      "role": "admin",
+      "created_at": "2025-08-16T18:54:33.476Z"
+    },
+    {
+      "id": 2,
+      "email": "manager@vccs.edu",
+      "password": "$2b$10$k/ehFbj50oBHgBP4f2xUkOkmuYcPxr9J40CVAK7V0bMLJAa0te2ni",
+      "name": "VCCS Event Manager",
+      "role": "eventManager",
+      "created_at": "2025-08-16T18:54:33.476Z"
+    },
+    {
+      "id": 3,
+      "email": "student@vccs.edu",
+      "password": "$2b$10$RPR3pS11eutvGW17OleQfuxVwtZH6vw9MAiJgMgMioL3Oh8yGcaBq",
+      "name": "VCCS Student",
+      "role": "student",
+      "created_at": "2025-08-16T18:54:33.476Z"
+    }
+  ],
+  "events": [
+    {
+      "id": 1,
+      "title": "VCCS Fall Open House",
+      "description": "Annual open house showcasing all VCCS colleges and programs. Meet faculty, tour facilities, and learn about financial aid opportunities.",
+      "college_id": 1,
+      "venue_id": 1,
+      "date": "2025-09-15",
+      "start_time": "10:00:00",
+      "end_time": "16:00:00",
+      "max_capacity": 500,
+      "status": "Approved",
+      "requester_id": 1,
+      "created_at": "2025-08-16T18:54:33.486Z"
+    },
+    {
+      "id": 2,
+      "title": "VCCS Leadership Summit",
+      "description": "Professional development conference for VCCS faculty and staff. Workshops on leadership, innovation, and student success.",
+      "college_id": 4,
+      "venue_id": 3,
+      "date": "2025-10-05",
+      "start_time": "08:30:00",
+      "end_time": "17:00:00",
+      "max_capacity": 100,
+      "status": "Approved",
+      "requester_id": 1,
+      "created_at": "2025-08-16T18:54:33.487Z"
+    },
+    {
+      "id": 3,
+      "title": "VCCS Student Success Conference",
+      "description": "Conference focused on student retention, academic success, and career preparation across all VCCS institutions.",
+      "college_id": 2,
+      "venue_id": 2,
+      "date": "2025-11-12",
+      "start_time": "09:00:00",
+      "end_time": "15:00:00",
+      "max_capacity": 300,
+      "status": "Approved",
+      "requester_id": 1,
+      "created_at": "2025-08-16T18:54:33.487Z"
+    },
+    {
+      "id": 4,
+      "title": "VCCS Technology Innovation Expo",
+      "description": "Showcase of cutting-edge technology initiatives and digital learning tools across VCCS colleges.",
+      "college_id": 3,
+      "venue_id": 5,
+      "date": "2025-10-22",
+      "start_time": "10:00:00",
+      "end_time": "18:00:00",
+      "max_capacity": 200,
+      "status": "Approved",
+      "requester_id": 1,
+      "created_at": "2025-08-16T18:54:33.487Z"
+    },
+    {
+      "id": 5,
+      "title": "VCCS Arts & Culture Festival",
+      "description": "Celebration of artistic and cultural diversity across VCCS institutions. Performances, exhibits, and workshops.",
+      "college_id": 5,
+      "venue_id": 4,
+      "date": "2025-11-08",
+      "start_time": "12:00:00",
+      "end_time": "20:00:00",
+      "max_capacity": 800,
+      "status": "Approved",
+      "requester_id": 1,
+      "created_at": "2025-08-16T18:54:33.487Z"
+    }
+  ],
+  "venues": [
+    {
+      "id": 1,
+      "name": "Main Auditorium",
+      "capacity": 500,
+      "description": "Large auditorium for major events",
+      "location": "Building A, Floor 1",
+      "amenities": [
+        "Projector",
+        "Sound System",
+        "Stage"
+      ],
+      "hourly_rate": 100,
+      "is_active": true,
+      "created_at": "2025-08-16T18:54:33.335Z"
+    },
+    {
+      "id": 2,
+      "name": "Conference Room 101",
+      "capacity": 50,
+      "description": "Medium conference room",
+      "location": "Building B, Floor 1",
+      "amenities": [
+        "Projector",
+        "Whiteboard"
+      ],
+      "hourly_rate": 25,
+      "is_active": true,
+      "created_at": "2025-08-16T18:54:33.335Z"
+    },
+    {
+      "id": 3,
+      "name": "VCCS Conference Center",
+      "capacity": 500,
+      "description": "State-of-the-art conference facility with multiple breakout rooms",
+      "location": "Richmond Main Campus",
+      "amenities": [
+        "Projector",
+        "Sound System"
+      ],
+      "hourly_rate": 50,
+      "is_active": true,
+      "created_at": "2025-08-16T18:54:33.483Z"
+    },
+    {
+      "id": 4,
+      "name": "VCCS Auditorium",
+      "capacity": 300,
+      "description": "Professional theater space for performances and presentations",
+      "location": "VCCS Arts Complex",
+      "amenities": [
+        "Projector",
+        "Sound System"
+      ],
+      "hourly_rate": 50,
+      "is_active": true,
+      "created_at": "2025-08-16T18:54:33.484Z"
+    },
+    {
+      "id": 5,
+      "name": "VCCS Executive Boardroom",
+      "capacity": 50,
+      "description": "Executive meeting room with advanced AV equipment",
+      "location": "VCCS Administration Building",
+      "amenities": [
+        "Projector",
+        "Sound System"
+      ],
+      "hourly_rate": 50,
+      "is_active": true,
+      "created_at": "2025-08-16T18:54:33.484Z"
+    },
+    {
+      "id": 6,
+      "name": "VCCS Outdoor Pavilion",
+      "capacity": 1000,
+      "description": "Open-air venue for large events and ceremonies",
+      "location": "VCCS Campus Green",
+      "amenities": [
+        "Projector",
+        "Sound System"
+      ],
+      "hourly_rate": 50,
+      "is_active": true,
+      "created_at": "2025-08-16T18:54:33.484Z"
+    },
+    {
+      "id": 7,
+      "name": "VCCS Technology Lab",
+      "capacity": 200,
+      "description": "Modern computer lab for technology demonstrations",
+      "location": "VCCS Technology Center",
+      "amenities": [
+        "Projector",
+        "Sound System"
+      ],
+      "hourly_rate": 50,
+      "is_active": true,
+      "created_at": "2025-08-16T18:54:33.485Z"
+    },
+    {
+      "id": 8,
+      "name": "VCCS Student Center",
+      "capacity": 400,
+      "description": "Multi-purpose student center for events and activities",
+      "location": "VCCS Student Life Building",
+      "amenities": [
+        "Projector",
+        "Sound System"
+      ],
+      "hourly_rate": 50,
+      "is_active": true,
+      "created_at": "2025-08-16T18:54:33.485Z"
+    },
+    {
+      "id": 9,
+      "name": "VCCS Innovation Hub",
+      "capacity": 150,
+      "description": "Collaborative space for innovation and entrepreneurship",
+      "location": "VCCS Innovation Center",
+      "amenities": [
+        "Projector",
+        "Sound System"
+      ],
+      "hourly_rate": 50,
+      "is_active": true,
+      "created_at": "2025-08-16T18:54:33.485Z"
+    },
+    {
+      "id": 10,
+      "name": "VCCS Healthcare Simulation Lab",
+      "capacity": 100,
+      "description": "Advanced healthcare training facility",
+      "location": "VCCS Health Sciences Building",
+      "amenities": [
+        "Projector",
+        "Sound System"
+      ],
+      "hourly_rate": 50,
+      "is_active": true,
+      "created_at": "2025-08-16T18:54:33.485Z"
+    },
+    {
+      "id": 11,
+      "name": "VCCS Business Incubator",
+      "capacity": 75,
+      "description": "Space for business development and networking",
+      "location": "VCCS Business Center",
+      "amenities": [
+        "Projector",
+        "Sound System"
+      ],
+      "hourly_rate": 50,
+      "is_active": true,
+      "created_at": "2025-08-16T18:54:33.485Z"
+    },
+    {
+      "id": 12,
+      "name": "VCCS Cultural Arts Center",
+      "capacity": 600,
+      "description": "Dedicated space for cultural events and performances",
+      "location": "VCCS Arts District",
+      "amenities": [
+        "Projector",
+        "Sound System"
+      ],
+      "hourly_rate": 50,
+      "is_active": true,
+      "created_at": "2025-08-16T18:54:33.486Z"
+    }
+  ],
+  "registrations": [
+    {
+      "id": 1,
+      "event_id": 1,
+      "user_id": 4,
+      "name": "Alex Johnson",
+      "email": "alex.johnson@vccs.edu",
+      "phone": "555-123-4567",
+      "dietary_restrictions": "Vegetarian",
+      "special_accommodations": "Wheelchair accessible seating",
+      "created_at": "2025-08-16T18:54:33.488Z"
+    },
+    {
+      "id": 2,
+      "event_id": 1,
+      "user_id": 4,
+      "name": "Maria Garcia",
+      "email": "maria.garcia@vccs.edu",
+      "phone": "555-234-5678",
+      "dietary_restrictions": "None",
+      "special_accommodations": "None",
+      "created_at": "2025-08-16T18:54:33.488Z"
+    },
+    {
+      "id": 3,
+      "event_id": 2,
+      "user_id": 4,
+      "name": "Sarah Lee",
+      "email": "sarah.lee@vccs.edu",
+      "phone": "555-345-6789",
+      "dietary_restrictions": "Gluten-free",
+      "special_accommodations": "None",
+      "created_at": "2025-08-16T18:54:33.489Z"
+    },
+    {
+      "id": 4,
+      "event_id": 3,
+      "user_id": 4,
+      "name": "David Kim",
+      "email": "david.kim@vccs.edu",
+      "phone": "555-456-7890",
+      "dietary_restrictions": "None",
+      "special_accommodations": "None",
+      "created_at": "2025-08-16T18:54:33.489Z"
+    },
+    {
+      "id": 5,
+      "event_id": 4,
+      "user_id": 4,
+      "name": "Emily Davis",
+      "email": "emily.davis@vccs.edu",
+      "phone": "555-567-8901",
+      "dietary_restrictions": "Vegan",
+      "special_accommodations": "None",
+      "created_at": "2025-08-16T18:54:33.489Z"
+    }
+  ],
+  "documents": [],
+  "invoices": [],
+  "colleges": [
+    {
+      "id": 1,
+      "name": "Virginia Community College System",
+      "created_at": "2025-08-16T18:54:33.335Z"
+    },
+    {
+      "id": 2,
+      "name": "Northern Virginia Community College",
+      "created_at": "2025-08-16T18:54:33.335Z"
+    },
+    {
+      "id": 3,
+      "name": "Virginia Western Community College",
+      "created_at": "2025-08-16T18:54:33.335Z"
+    },
+    {
+      "id": 4,
+      "name": "Tidewater Community College",
+      "created_at": "2025-08-16T18:54:33.477Z"
+    },
+    {
+      "id": 5,
+      "name": "Piedmont Virginia Community College",
+      "created_at": "2025-08-16T18:54:33.477Z"
+    },
+    {
+      "id": 6,
+      "name": "John Tyler Community College",
+      "created_at": "2025-08-16T18:54:33.478Z"
+    },
+    {
+      "id": 7,
+      "name": "Reynolds Community College",
+      "created_at": "2025-08-16T18:54:33.478Z"
+    },
+    {
+      "id": 8,
+      "name": "Central Virginia Community College",
+      "created_at": "2025-08-16T18:54:33.478Z"
+    },
+    {
+      "id": 9,
+      "name": "Southside Virginia Community College",
+      "created_at": "2025-08-16T18:54:33.479Z"
+    },
+    {
+      "id": 10,
+      "name": "Virginia Highlands Community College",
+      "created_at": "2025-08-16T18:54:33.479Z"
+    },
+    {
+      "id": 11,
+      "name": "Mountain Empire Community College",
+      "created_at": "2025-08-16T18:54:33.479Z"
+    },
+    {
+      "id": 12,
+      "name": "Patrick Henry Community College",
+      "created_at": "2025-08-16T18:54:33.479Z"
+    },
+    {
+      "id": 13,
+      "name": "Danville Community College",
+      "created_at": "2025-08-16T18:54:33.480Z"
+    },
+    {
+      "id": 14,
+      "name": "Germanna Community College",
+      "created_at": "2025-08-16T18:54:33.480Z"
+    },
+    {
+      "id": 15,
+      "name": "Lord Fairfax Community College",
+      "created_at": "2025-08-16T18:54:33.480Z"
+    },
+    {
+      "id": 16,
+      "name": "New River Community College",
+      "created_at": "2025-08-16T18:54:33.480Z"
+    },
+    {
+      "id": 17,
+      "name": "Southwest Virginia Community College",
+      "created_at": "2025-08-16T18:54:33.481Z"
+    },
+    {
+      "id": 18,
+      "name": "Wytheville Community College",
+      "created_at": "2025-08-16T18:54:33.481Z"
+    },
+    {
+      "id": 19,
+      "name": "Eastern Shore Community College",
+      "created_at": "2025-08-16T18:54:33.481Z"
+    },
+    {
+      "id": 20,
+      "name": "Paul D. Camp Community College",
+      "created_at": "2025-08-16T18:54:33.482Z"
+    },
+    {
+      "id": 21,
+      "name": "Rappahannock Community College",
+      "created_at": "2025-08-16T18:54:33.482Z"
+    },
+    {
+      "id": 22,
+      "name": "Blue Ridge Community College",
+      "created_at": "2025-08-16T18:54:33.482Z"
+    },
+    {
+      "id": 23,
+      "name": "J. Sargeant Reynolds Community College",
+      "created_at": "2025-08-16T18:54:33.483Z"
+    },
+    {
+      "id": 24,
+      "name": "Thomas Nelson Community College",
+      "created_at": "2025-08-16T18:54:33.483Z"
+    }
+  ],
+  "migration_logs": []
+}

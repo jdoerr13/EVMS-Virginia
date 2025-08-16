@@ -11,26 +11,38 @@ async function setupAdminSystem() {
     const managerPassword = await bcrypt.hash('manager123', 10);
     const studentPassword = await bcrypt.hash('student123', 10);
     
-    await query(
-      `INSERT INTO users (email, password, name, role) 
-       VALUES ($1, $2, $3, $4) 
-       ON CONFLICT (email) DO UPDATE SET password = $2, name = $3, role = $4`,
-      ['admin@vccs.edu', adminPassword, 'VCCS System Administrator', 'admin']
-    );
+    // Check if users already exist
+    const existingUsers = await query('SELECT', 'users');
+    const adminExists = existingUsers.rows.find(u => u.email === 'admin@vccs.edu');
+    const managerExists = existingUsers.rows.find(u => u.email === 'manager@vccs.edu');
+    const studentExists = existingUsers.rows.find(u => u.email === 'student@vccs.edu');
     
-    await query(
-      `INSERT INTO users (email, password, name, role) 
-       VALUES ($1, $2, $3, $4) 
-       ON CONFLICT (email) DO UPDATE SET password = $2, name = $3, role = $4`,
-      ['manager@vccs.edu', managerPassword, 'VCCS Event Manager', 'eventManager']
-    );
+    if (!adminExists) {
+      await query('INSERT', 'users', {
+        email: 'admin@vccs.edu',
+        password: adminPassword,
+        name: 'VCCS System Administrator',
+        role: 'admin'
+      });
+    }
     
-    await query(
-      `INSERT INTO users (email, password, name, role) 
-       VALUES ($1, $2, $3, $4) 
-       ON CONFLICT (email) DO UPDATE SET password = $2, name = $3, role = $4`,
-      ['student@vccs.edu', studentPassword, 'VCCS Student', 'student']
-    );
+    if (!managerExists) {
+      await query('INSERT', 'users', {
+        email: 'manager@vccs.edu',
+        password: managerPassword,
+        name: 'VCCS Event Manager',
+        role: 'eventManager'
+      });
+    }
+    
+    if (!studentExists) {
+      await query('INSERT', 'users', {
+        email: 'student@vccs.edu',
+        password: studentPassword,
+        name: 'VCCS Student',
+        role: 'student'
+      });
+    }
     
     console.log('✅ Demo users created successfully!');
 
@@ -62,11 +74,12 @@ async function setupAdminSystem() {
       'Thomas Nelson Community College'
     ];
 
+    const existingColleges = await query('SELECT', 'colleges');
     for (const college of vccsColleges) {
-      await query(
-        'INSERT INTO colleges (name) VALUES ($1) ON CONFLICT DO NOTHING',
-        [college]
-      );
+      const exists = existingColleges.rows.find(c => c.name === college);
+      if (!exists) {
+        await query('INSERT', 'colleges', { name: college });
+      }
     }
     console.log('✅ VCCS colleges setup complete!');
 
@@ -85,11 +98,20 @@ async function setupAdminSystem() {
       ['VCCS Cultural Arts Center', 600, 'Dedicated space for cultural events and performances', 'VCCS Arts District']
     ];
 
+    const existingVenues = await query('SELECT', 'venues');
     for (const [name, capacity, description, location] of vccsVenues) {
-      await query(
-        'INSERT INTO venues (name, capacity, description, location) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING',
-        [name, capacity, description, location]
-      );
+      const exists = existingVenues.rows.find(v => v.name === name);
+      if (!exists) {
+        await query('INSERT', 'venues', {
+          name,
+          capacity,
+          description,
+          location,
+          amenities: ['Projector', 'Sound System'],
+          hourly_rate: 50.00,
+          is_active: true
+        });
+      }
     }
     console.log('✅ VCCS venues setup complete!');
 
@@ -100,20 +122,26 @@ async function setupAdminSystem() {
       ['VCCS Leadership Summit', 'Professional development conference for VCCS faculty and staff. Workshops on leadership, innovation, and student success.', 4, 3, '2025-10-05', '08:30:00', '17:00:00', 100, 'Approved'],
       ['VCCS Student Success Conference', 'Conference focused on student retention, academic success, and career preparation across all VCCS institutions.', 2, 2, '2025-11-12', '09:00:00', '15:00:00', 300, 'Approved'],
       ['VCCS Technology Innovation Expo', 'Showcase of cutting-edge technology initiatives and digital learning tools across VCCS colleges.', 3, 5, '2025-10-22', '10:00:00', '18:00:00', 200, 'Approved'],
-      ['VCCS Arts & Culture Festival', 'Celebration of artistic and cultural diversity across VCCS institutions. Performances, exhibits, and workshops.', 5, 4, '2025-11-08', '12:00:00', '20:00:00', 800, 'Approved'],
-      ['VCCS Healthcare Career Fair', 'Career fair connecting students with healthcare employers and educational opportunities.', 2, 1, '2025-09-28', '09:00:00', '16:00:00', 400, 'Approved'],
-      ['VCCS Business & Entrepreneurship Forum', 'Forum for business students and entrepreneurs to network with industry leaders and learn about opportunities.', 4, 3, '2025-10-15', '13:00:00', '18:00:00', 150, 'Approved'],
-      ['VCCS Community Service Day', 'Day of service bringing together VCCS students, faculty, and staff to serve local communities.', 1, 4, '2025-09-20', '08:00:00', '14:00:00', 600, 'Approved'],
-      ['VCCS Research Symposium', 'Annual symposium showcasing student and faculty research across all VCCS colleges.', 2, 5, '2025-11-05', '09:00:00', '17:00:00', 250, 'Approved'],
-      ['VCCS Winter Graduation Ceremony', 'Celebration of student achievements and graduation ceremonies across VCCS institutions.', 1, 1, '2025-12-12', '14:00:00', '18:00:00', 1000, 'Approved']
+      ['VCCS Arts & Culture Festival', 'Celebration of artistic and cultural diversity across VCCS institutions. Performances, exhibits, and workshops.', 5, 4, '2025-11-08', '12:00:00', '20:00:00', 800, 'Approved']
     ];
 
+    const existingEvents = await query('SELECT', 'events');
     for (const [title, description, collegeId, venueId, date, startTime, endTime, maxCapacity, status] of vccsEvents) {
-      await query(
-        `INSERT INTO events (title, description, college_id, venue_id, date, start_time, end_time, max_capacity, status, requester_id) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 1) ON CONFLICT DO NOTHING`,
-        [title, description, collegeId, venueId, date, startTime, endTime, maxCapacity, status]
-      );
+      const exists = existingEvents.rows.find(e => e.title === title);
+      if (!exists) {
+        await query('INSERT', 'events', {
+          title,
+          description,
+          college_id: collegeId,
+          venue_id: venueId,
+          date,
+          start_time: startTime,
+          end_time: endTime,
+          max_capacity: maxCapacity,
+          status,
+          requester_id: 1
+        });
+      }
     }
     console.log('✅ VCCS events setup complete!');
 
@@ -127,12 +155,20 @@ async function setupAdminSystem() {
       [4, 'Emily Davis', 'emily.davis@vccs.edu', '555-567-8901', 'Vegan', 'None']
     ];
 
+    const existingRegistrations = await query('SELECT', 'registrations');
     for (const [eventId, name, email, phone, dietary, accommodations] of sampleRegistrations) {
-      await query(
-        `INSERT INTO registrations (event_id, user_id, name, email, phone, dietary_restrictions, special_accommodations) 
-         VALUES ($1, 4, $2, $3, $4, $5, $6) ON CONFLICT DO NOTHING`,
-        [eventId, name, email, phone, dietary, accommodations]
-      );
+      const exists = existingRegistrations.rows.find(r => r.email === email && r.event_id === eventId);
+      if (!exists) {
+        await query('INSERT', 'registrations', {
+          event_id: eventId,
+          user_id: 4,
+          name,
+          email,
+          phone,
+          dietary_restrictions: dietary,
+          special_accommodations: accommodations
+        });
+      }
     }
     console.log('✅ Sample registrations setup complete!');
 
