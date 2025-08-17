@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
-    "migrate": "psql \"$DATABASE_URL\" -f ../schema.sql",
-    "seed": "node src/seed.js",
-    "setup-admin": "node src/setup-admin.js"
+    "setup-admin": "node src/setup-admin.js",
+    "migrate": "node src/migrate.js",
+    "seed": "node src/seed.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

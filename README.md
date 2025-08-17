@@ -4,24 +4,26 @@ A comprehensive full-stack platform designed to streamline scheduling, approvals
 
 ## 🚀 **Current Status: FULLY OPERATIONAL**
 
-✅ **Backend API**: Complete and tested  
-✅ **Database**: PostgreSQL schema implemented with sample data  
-✅ **Authentication**: JWT-based system working with mock fallback  
+✅ **Backend API**: Complete and tested with Node.js/Express  
+✅ **Database**: PostgreSQL with Docker support + In-memory fallback  
+✅ **Authentication**: JWT-based system working  
 ✅ **All Endpoints**: Fully functional and documented  
 ✅ **Frontend**: React application fully integrated  
 ✅ **Role-Based Routing**: Admin/Event Manager/Public access working  
 ✅ **Event Management**: CRUD operations with remove functionality  
 ✅ **Security**: Vulnerabilities addressed and dependencies updated  
+✅ **Docker Support**: Easy PostgreSQL setup with Docker Compose
 
 **Last Updated**: August 2024  
-**Version**: v1.5.0 - Production Ready with Enhanced Features
+**Version**: v2.1.0 - Node.js/Express with PostgreSQL & Docker Support
 
 ## 🏗️ System Architecture
 
-This project consists of two main components:
+This project consists of three main components:
 
 - **Frontend**: React-based web application with modern UI
 - **Backend**: Node.js/Express API with PostgreSQL database
+- **Database**: PostgreSQL with Docker support (in-memory fallback available)
 
 ## 📁 Project Structure
 
@@ -38,22 +40,30 @@ EVMS-Virginia/
 │   ├── src/
 │   │   ├── routes/        # API route handlers
 │   │   ├── middleware/    # Express middleware
-│   │   └── db.js         # Database connection
-│   ├── db/
-│   │   └── schema.sql    # Database schema
+│   │   └── db.js         # Database layer (PostgreSQL + fallback)
+│   ├── data/
+│   │   └── database.json # JSON file storage (fallback)
+│   ├── .env.example      # Environment configuration template
 │   └── package.json
+├── db/
+│   └── schema.sql        # PostgreSQL database schema
+├── docker-compose.yml    # Docker setup for PostgreSQL
+├── start-dev.ps1        # Development startup script
 └── README.md
 ```
 
 ## 🆕 **Recent Updates & Features**
 
-### ✅ **Latest Fixes (August 2024)**
+### ✅ **Latest Changes (August 2024)**
+- **PostgreSQL Integration**: Full PostgreSQL support with Docker setup
+- **Docker Support**: Easy database setup with docker-compose
+- **Development Script**: Automated startup script for full environment
+- **Database Fallback**: Automatic fallback to in-memory database if PostgreSQL unavailable
+- **Environment Configuration**: Proper .env setup with examples
 - **Authentication Flow**: Fixed admin portal redirecting to public calendar
-- **Mock Authentication**: Added fallback authentication for development without backend
 - **Role-Based Routing**: Implemented smart routing based on user roles
 - **Remove Button**: Added ability to delete events (including approved ones)
 - **Security**: Resolved npm vulnerabilities and updated dependencies
-- **JSX Syntax**: Fixed compilation errors in EventManager and PublicView components
 
 ### 🎯 **Key Features**
 - **Admin Dashboard**: Full event management with approval/rejection workflow
@@ -61,142 +71,82 @@ EVMS-Virginia/
 - **Public Calendar**: Event browsing and registration for students
 - **Remove Functionality**: Delete events with confirmation dialog
 - **Role-Based Access**: Different interfaces for admin, event manager, and public users
+- **PostgreSQL Database**: Robust data persistence with Docker support
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
 - **Node.js** (v16 or higher)
-- **PostgreSQL** (v12 or higher)
 - **npm** or **yarn**
+- **Docker Desktop** (for PostgreSQL setup)
 
-### 1. Backend Setup
+### Option 1: Full Setup with PostgreSQL (Recommended)
 
-#### Install Dependencies
+#### 1. Start PostgreSQL with Docker
+```bash
+# Start Docker Desktop first, then run:
+docker-compose up -d
+```
+
+This will:
+- Start PostgreSQL on port 5432
+- Create database `evms_db`
+- Run the schema migration automatically
+- Set up admin user
+
+#### 2. Backend Setup
 ```bash
 cd server
 npm install
 ```
 
-#### Environment Configuration
-Create a `.env` file in the `server` directory:
+#### 3. Environment Configuration
+Copy the example environment file:
+```bash
+cp .env.example .env
+```
 
+The `.env` file is already configured for PostgreSQL:
 ```env
-# Environment Configuration for EVMS Backend
-
 # Database Configuration
-DATABASE_URL=postgresql://postgres:your_password@localhost:5432/evms_db
+DATABASE_URL=postgresql://postgres:evms_password@localhost:5432/evms_db
+USE_POSTGRES=true
 DATABASE_SSL=false
-
-# JWT Configuration
-JWT_SECRET=your_super_secret_jwt_key_here_change_this_in_production
-JWT_REFRESH_SECRET=your_super_secret_refresh_key_here_change_this_in_production
 
 # Server Configuration
 PORT=4000
 NODE_ENV=development
 
-# CORS Configuration
-CORS_ORIGIN=http://localhost:3000
+# JWT Configuration
+JWT_SECRET=evms_jwt_secret_key_change_this_in_production
 
 # File Upload Configuration
+UPLOAD_DIR=./uploads
 MAX_FILE_SIZE=10485760
-UPLOAD_PATH=./uploads
+
+# CORS Configuration
+CORS_ORIGIN=http://localhost:3000
 ```
 
-#### PostgreSQL Installation & Setup
-
-**Option A: Download PostgreSQL**
-1. Download PostgreSQL from https://www.postgresql.org/download/windows/
-2. Install with default settings
-3. Remember the password you set for the `postgres` user
-4. Update the `.env` file with your actual password
-
-**Option B: Using PowerShell (if PostgreSQL is already installed)**
-```powershell
-# Add PostgreSQL to PATH (adjust version number as needed)
-$env:PATH += ";C:\Program Files\PostgreSQL\17\bin"
-
-# Test PostgreSQL connection
-psql --version
-
-# Create database (replace 'your_password' with actual password)
-$env:PGPASSWORD = "your_password"
-psql -U postgres -c "CREATE DATABASE evms_db;"
-```
-
-#### Database Migration & Admin Setup
-Run the database migration and admin setup:
-
+#### 4. Start the Backend Server
 ```bash
-# Using PowerShell with password
-$env:PGPASSWORD = "your_password"
-psql -U postgres -d evms_db -f db/schema.sql
-
-# Or using npm script (if configured correctly)
-npm run migrate
-
-# Setup admin system with demo users and VCCS data
-npm run setup-admin
-```
-
-#### Start the Backend Server
-```bash
-# Development mode (with auto-restart)
 npm run dev
-
-# Production mode
-npm start
-
-# Or start directly with Node.js
-node src/server.js
 ```
 
-The API will be available at `http://localhost:4000/api`
+### Option 2: In-Memory Database (No Docker Required)
 
-#### Verify Backend Setup
-Test that your backend is working:
+If you prefer not to use Docker, the system will automatically fall back to an in-memory database:
 
 ```bash
-# Test the colleges endpoint
-curl http://localhost:4000/api/colleges
-
-# Or using PowerShell
-Invoke-RestMethod -Uri "http://localhost:4000/api/colleges" -Method GET
+cd server
+npm install
+npm run dev
 ```
 
-You should see sample college data returned.
+The system will automatically detect that PostgreSQL is not available and use the in-memory database instead.
 
-#### Troubleshooting
-
-**Common Issues:**
-
-1. **"Cannot find package 'express'"**
-   ```bash
-   cd server
-   npm install
-   ```
-
-2. **PostgreSQL connection failed**
-   - Ensure PostgreSQL is installed and running
-   - Check your password in the `.env` file
-   - Verify PostgreSQL service is started
-
-3. **Port 4000 already in use**
-   ```bash
-   # Find and kill the process using port 4000
-   netstat -ano | findstr :4000
-   taskkill /PID <PID> /F
-   ```
-
-4. **Database migration fails**
-   ```bash
-   # Ensure you're using the correct password
-   $env:PGPASSWORD = "your_actual_password"
-   psql -U postgres -d evms_db -f db/schema.sql
-   ```
-
-### 2. Frontend Setup
+### 3. Frontend Setup
 
 #### Install Dependencies
 ```bash
@@ -209,7 +159,21 @@ npm install
 npm start
 ```
 
-The application will be available at `http://localhost:3000`
+### 🚀 **One-Click Development Setup**
+
+Use the provided startup script to launch everything at once:
+
+```bash
+# Make sure Docker Desktop is running first
+.\start-dev.ps1
+```
+
+This script will:
+1. Check if Docker is running
+2. Start PostgreSQL container
+3. Start the backend server
+4. Start the frontend server
+5. Open both applications in your browser
 
 ### 🎭 **Demo Credentials**
 
@@ -236,6 +200,20 @@ For testing the application, use these demo accounts:
 2. Go to `http://localhost:3000`
 3. Login with any of the demo credentials above
 4. Test the different dashboards and features
+
+## 🗄️ Database Options
+
+### PostgreSQL (Recommended)
+- **Pros**: Robust, scalable, ACID compliance
+- **Setup**: Docker Compose (easiest) or local installation
+- **Data Persistence**: Full database with proper relationships
+- **Performance**: Optimized queries and indexing
+
+### In-Memory Database (Fallback)
+- **Pros**: No setup required, instant startup
+- **Cons**: Data lost on restart, limited scalability
+- **Use Case**: Development, testing, demos
+- **Storage**: JSON file in `server/data/database.json`
 
 ## 🔧 Backend API Documentation
 
@@ -316,9 +294,9 @@ For complete API documentation, see [server/API_DOCUMENTATION.md](server/API_DOC
 - ✅ **Invoice & Payment System** - Invoice generation, mock Stripe payments, refunds
 - ✅ **Reporting & Analytics** - Comprehensive reports, CSV exports, statistics
 - ✅ **Data Migration** - CSV/XLSX uploads, batch processing, logging
-- ✅ **Database Schema** - Complete PostgreSQL schema with relationships and indexes
+- ✅ **Database Layer** - PostgreSQL with automatic in-memory fallback
 
-#### Frontend (Existing)
+#### Frontend (Complete)
 - ✅ **React Application** - Modern UI with Tailwind CSS
 - ✅ **Role-based Dashboard** - Admin, EventManager, and Student views
 - ✅ **Event Management** - Create, edit, view events
@@ -370,27 +348,38 @@ For complete API documentation, see [server/API_DOCUMENTATION.md](server/API_DOC
 - ✅ Migration logging
 - ✅ Error handling and retry
 
-## 🗄️ Database Schema
+## 🗄️ Database Architecture
 
-The system uses PostgreSQL with the following main tables:
+### PostgreSQL Schema
+The system uses a comprehensive PostgreSQL schema with the following tables:
 
 - **users** - User accounts and authentication
+- **colleges** - Virginia community colleges
+- **venues** - Event venues and facilities
 - **events** - Event information and scheduling
-- **venues** - Venue details and availability
-- **registrations** - Event registrations
-- **documents** - File uploads and metadata
-- **invoices** - Billing and payment records
+- **registrations** - Event registrations and attendance
+- **documents** - File uploads and document management
+- **invoices** - Financial records and payments
+- **invoice_items** - Detailed invoice line items
+- **payments** - Payment transaction records
+- **refunds** - Refund transaction records
 - **migration_logs** - Data migration tracking
+
+### In-Memory Fallback
+If PostgreSQL is not available, the system automatically falls back to:
+- **Storage**: `server/data/database.json`
+- **Tables**: Same structure as PostgreSQL
+- **Persistence**: Automatic saving to JSON file
 
 ## 🔒 Security Features
 
 - **JWT Authentication** with refresh tokens
 - **Role-based Access Control** (RBAC)
 - **Input Validation** using Zod schemas
-- **SQL Injection Protection** with parameterized queries
 - **CORS Configuration** for cross-origin requests
 - **Helmet.js** security headers
 - **Password Hashing** with bcrypt
+- **SQL Injection Protection** with parameterized queries
 
 ## 📊 API Response Format
 
@@ -418,16 +407,11 @@ The system uses PostgreSQL with the following main tables:
    ```bash
    # Set production environment variables
    NODE_ENV=production
-   DATABASE_URL=your_production_db_url
    JWT_SECRET=your_production_jwt_secret
+   DATABASE_URL=your_production_postgres_url
    ```
 
-2. **Database Migration**
-   ```bash
-   npm run migrate
-   ```
-
-3. **Start Production Server**
+2. **Start Production Server**
    ```bash
    npm start
    ```
@@ -459,8 +443,7 @@ npm test
 
 ### Backend Development
 - **Hot Reload**: `npm run dev`
-- **Database Reset**: `npm run migrate`
-- **Seed Data**: `npm run seed`
+- **Setup Admin**: `npm run setup-admin`
 
 ### Frontend Development
 - **Hot Reload**: `npm start`
@@ -483,16 +466,18 @@ This project is licensed under the MIT License.
 
 For support and questions:
 - Check the [API Documentation](server/API_DOCUMENTATION.md)
-- Review the database schema in `db/schema.sql`
+- Review the database structure in `db/schema.sql`
 - Open an issue on GitHub
 
 ## 🔄 Version History
 
-- **v1.0.0** - Initial release with core event management features
+- **v1.0.0** - Initial release with PostgreSQL backend
 - **v1.1.0** - Added document management and file uploads
 - **v1.2.0** - Implemented invoice and payment system
 - **v1.3.0** - Added data migration capabilities
 - **v1.4.0** - Enhanced reporting and analytics
+- **v2.0.0** - Converted to Node.js/Express-only with in-memory database
+- **v2.1.0** - **Added PostgreSQL support with Docker and development automation**
 
 ---
 

@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:17
+    container_name: evms-postgres
+    environment:
+      POSTGRES_DB: evms_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: evms_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
