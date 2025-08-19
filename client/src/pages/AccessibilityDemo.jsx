@@ -5,7 +5,7 @@ export default function AccessibilityDemo() {
 
   return (
     <div className={highContrast ? "bg-black text-yellow-300 p-4" : "p-4"}>
-      <h1 className="text-2xl font-bold mb-4">Accessibility Demo</h1>
+      <h1 className="text-2xl font-bold mb-4">Accessibility</h1>
       <p className="mb-4">
         This page demonstrates WCAG 2.1 AA compliance features like keyboard
         navigation, ARIA labels, and high contrast mode.

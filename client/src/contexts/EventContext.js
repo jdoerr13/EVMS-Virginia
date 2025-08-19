@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { getColleges, getVenues, getEvents, postEvent, setStatus } from "../utils/api";
 
 const EventContext = createContext();
 
@@ -176,64 +177,93 @@ function seedEvents() {
 }
   ];
 }
-
 export function EventProvider({ children }) {
-  const [events, setEvents] = useState(seedEvents());
+  const [events, setEvents] = useState([]);
+  const [lookups, setLookups] = useState({ collegesById: {}, venuesById: {} });
 
-  const addEvent = (event) => {
-    const id = Date.now();
-    setEvents((prev) => [
-      ...prev,
-      {
-        id,
-        ...event,
-        status: event.status || "Pending",
-        requester: event.requester || "manager@vccs.edu",
-        sessions: event.sessions || [],
-        registrations: [],
-        docs: [],
-      },
-    ]);
-  };
+  useEffect(() => {
+    (async () => {
+      try {
+        // load lookups (optional for future use)
+        const [cRes, vRes] = await Promise.all([getColleges(), getVenues()]);
+        const collegesById = Object.fromEntries((cRes.data || []).map(c => [c.id, c.name]));
+        const venuesById   = Object.fromEntries((vRes.data || []).map(v => [v.id, v.name]));
+        setLookups({ collegesById, venuesById });
 
-  const addRegistration = (eventId, registration) => {
-    setEvents((prev) =>
-      prev.map((evt) =>
-        evt.id === eventId
-          ? {
-              ...evt,
-              registrations: [
-                ...(evt.registrations || []),
-                { ...registration, dateRegistered: new Date().toISOString() },
-              ],
+        // load events
+        const eRes = await getEvents();
+        const fromDB = (eRes.data || []).map(row => ({
+          id: row.id,
+          title: row.title,
+          college: row.college || collegesById[row.college_id] || "",
+          venue: row.venue || venuesById[row.venue_id] || "",
+          date: row.date,
+          startTime: row.start_time?.slice(0, 5) || "",
+          endTime: row.end_time?.slice(0, 5) || "",
+          description: row.description || "",
+          status: row.status || "Pending",
+          requester: row.requester_name || ""
+        }));
+
+                    const unique = [];
+            const seen = new Set();
+            for (const e of fromDB) {
+              if (!seen.has(e.id)) {
+                unique.push(e);
+                seen.add(e.id);
+              }
             }
-          : evt
-      )
-    );
+setEvents(unique);
+      } catch (err) {
+        console.error("EventContext error:", err);
+        setEvents([]); 
+      }
+    })();
+  }, []);
+
+  const addEvent = async (uiEvent) => {
+    try {
+      const payload = {
+        title: uiEvent.title,
+        description: uiEvent.description || "",
+        college_id: findId(lookups.collegesById, uiEvent.college),
+        venue_id: findId(lookups.venuesById, uiEvent.venue),
+        date: uiEvent.date,
+        start_time: uiEvent.startTime || null,
+        end_time: uiEvent.endTime || null,
+        max_capacity: uiEvent.max_capacity || null,
+        status: uiEvent.status || "Pending",
+        requester_id: 1, // demo
+      };
+      const { data } = await postEvent(payload);
+      setEvents(prev => [...prev, { ...uiEvent, id: data.id }]);
+    } catch {
+      // demo fallback
+      setEvents(prev => [...prev, { ...uiEvent, id: Date.now() }]);
+    }
   };
 
-  const updateEventStatus = (id, newStatus) => {
-    setEvents((prev) =>
-      prev.map((event) => (event.id === id ? { ...event, status: newStatus } : event))
-    );
-  };
-
-  const addDoc = (eventId, doc) => {
-    setEvents((prev) =>
-      prev.map((e) => {
-        if (e.id !== eventId) return e;
-        return { ...e, docs: [...(e.docs || []), doc] };
-      })
+  const updateEventStatus = async (id, newStatus) => {
+    try {
+      await setStatus(id, newStatus);
+    } catch (err) {
+      console.error("updateEventStatus error:", err);
+    }
+    setEvents(prev =>
+      prev.map(e => (e.id === id ? { ...e, status: newStatus } : e))
     );
   };
 
   return (
-    <EventContext.Provider
-      value={{ events, addEvent, updateEventStatus, addRegistration, addDoc }}
-    >
+    <EventContext.Provider value={{ events, addEvent, updateEventStatus }}>
       {children}
     </EventContext.Provider>
   );
+}
+
+function findId(map, name) {
+  const hit = Object.entries(map).find(([, v]) => v === name);
+  return hit ? Number(hit[0]) : null;
 }
 
 export function useEvents() {

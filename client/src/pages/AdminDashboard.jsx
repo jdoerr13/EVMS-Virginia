@@ -25,42 +25,42 @@ export default function AdminDashboard() {
   const { events, addEvent } = useEvents();
 
   // Seed fallback events ONCE if empty to avoid duplicates
-  React.useEffect(() => {
-    if (seededRef.current) return;
-    if (events.length === 0) {
-      const fallbackEvents = [
-        {
-          id: 1,
-          title: "Welcome Orientation",
-          college: "Humanities",
-          venue: "Main Hall",
-          date: "2025-08-05",
-          status: "Approved",
-          requester: "admin@college.edu",
-        },
-        {
-          id: 2,
-          title: "Faculty Meeting",
-          college: "Sciences",
-          venue: "Auditorium",
-          date: "2025-08-10",
-          status: "Pending",
-          requester: "dean@college.edu",
-        },
-        {
-          id: 3,
-          title: "Research Showcase",
-          college: "Engineering",
-          venue: "Main Hall",
-          date: "2025-08-15",
-          status: "Rejected",
-          requester: "prof@college.edu",
-        },
-      ];
-      fallbackEvents.forEach(addEvent);
-      seededRef.current = true;
-    }
-  }, [events.length, addEvent]);
+  // React.useEffect(() => {
+  //   if (seededRef.current) return;
+  //   if (events.length === 0) {
+  //     const fallbackEvents = [
+  //       {
+  //         id: 1,
+  //         title: "Welcome Orientation",
+  //         college: "Humanities",
+  //         venue: "Main Hall",
+  //         date: "2025-08-05",
+  //         status: "Approved",
+  //         requester: "admin@college.edu",
+  //       },
+  //       {
+  //         id: 2,
+  //         title: "Faculty Meeting",
+  //         college: "Sciences",
+  //         venue: "Auditorium",
+  //         date: "2025-08-10",
+  //         status: "Pending",
+  //         requester: "dean@college.edu",
+  //       },
+  //       {
+  //         id: 3,
+  //         title: "Research Showcase",
+  //         college: "Engineering",
+  //         venue: "Main Hall",
+  //         date: "2025-08-15",
+  //         status: "Rejected",
+  //         requester: "prof@college.edu",
+  //       },
+  //     ];
+  //     fallbackEvents.forEach(addEvent);
+  //     seededRef.current = true;
+  //   }
+  //  }, [events.length, addEvent]);
 
   const handleExport = () => downloadCSV(events);
 

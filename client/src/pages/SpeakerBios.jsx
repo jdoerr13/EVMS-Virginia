@@ -2,12 +2,12 @@
 import React, { useState } from "react";
 import { useRole } from "../contexts/RoleContext";
 
-// Reusable modal component
+// Reusable modal
 function Modal({ show, onClose, children }) {
   if (!show) return null;
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg max-w-lg w-full transform transition-all scale-100 p-6 relative animate-fadeIn">
+      <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative">
         <button
           onClick={onClose}
           className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
@@ -20,135 +20,104 @@ function Modal({ show, onClose, children }) {
   );
 }
 
-// Seeded mock profiles
+// 🎤 Diverse seeded profiles
 const initialProfiles = [
   {
     id: 1,
+    name: "The Skyline Band",
+    role: "Performer",
+    affiliation: "Richmond, VA",
+    topic: "Indie Rock",
+    bio: "An indie band known for energetic live shows and soulful lyrics.",
+    sessions: ["Evening Concert – Main Stage"],
+    photo: "https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?q=80&w=800",
+  },
+  {
+    id: 2,
     name: "Dr. Alice Morgan",
     role: "Keynote Speaker",
     affiliation: "Tidewater Community College",
     topic: "AI in Education",
-    bio: "Dr. Morgan is a leading researcher in AI-driven learning solutions.",
+    bio: "Leading researcher in AI-driven learning solutions.",
     sessions: ["Opening Keynote: AI in the Classroom"],
-    photo: "https://randomuser.me/api/portraits/women/11.jpg",
-  },
-  {
-    id: 2,
-    name: "James Carter",
-    role: "Panelist",
-    affiliation: "Northern Virginia Community College",
-    topic: "Renewable Energy",
-    bio: "James has 15 years of experience in sustainable energy projects.",
-    sessions: ["Panel: Future of Renewable Energy"],
-    photo: "https://randomuser.me/api/portraits/men/12.jpg",
+    photo: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?q=80&w=800",
   },
   {
     id: 3,
-    name: "Sophia Martinez",
-    role: "Workshop Leader",
-    affiliation: "Piedmont Virginia CC",
-    topic: "Performing Arts",
-    bio: "Sophia is an award-winning choreographer and director.",
-    sessions: ["Dance & Movement Workshop"],
-    photo: "https://randomuser.me/api/portraits/women/13.jpg",
+    name: "Marcus Lee",
+    role: "Comedian",
+    affiliation: "Washington, D.C.",
+    topic: "Stand-up Comedy",
+    bio: "Stand-up comic featured on national tours and comedy festivals.",
+    sessions: ["Comedy Night Showcase"],
+    photo: "https://images.unsplash.com/photo-1525182008055-f88b95ff7980?q=80&w=800",
   },
   {
     id: 4,
-    name: "David Kim",
-    role: "Moderator",
-    affiliation: "Virginia Western CC",
-    topic: "Cybersecurity",
-    bio: "David is a certified security analyst with expertise in cloud systems.",
-    sessions: ["Cybersecurity in Higher Education"],
-    photo: "https://randomuser.me/api/portraits/men/14.jpg",
+    name: "Sophia Martinez",
+    role: "Performer",
+    affiliation: "Piedmont Virginia CC",
+    topic: "Dance & Choreography",
+    bio: "Award-winning choreographer and performing artist.",
+    sessions: ["Dance & Movement Workshop"],
+photo: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?q=80&w=800&auto=format&fit=crop",
+
   },
   {
     id: 5,
     name: "Emily Chen",
-    role: "Performer",
+    role: "Violinist",
     affiliation: "Blue Ridge Community College",
     topic: "Classical Music",
-    bio: "Emily is a classically trained violinist performing worldwide.",
+    bio: "Classically trained violinist performing globally.",
     sessions: ["Evening Concert: Strings Across Cultures"],
-    photo: "https://randomuser.me/api/portraits/women/15.jpg",
+    photo: "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?q=80&w=800",
   },
   {
     id: 6,
-    name: "Michael Brown",
-    role: "Guest Lecturer",
-    affiliation: "Mountain Empire Community College",
-    topic: "Business Leadership",
-    bio: "Michael has authored 3 books on strategic leadership.",
-    sessions: ["Leadership in the 21st Century"],
-    photo: "https://randomuser.me/api/portraits/men/16.jpg",
+    name: "Daniel White",
+    role: "Jazz Saxophonist",
+    affiliation: "John Tyler Community College",
+    topic: "Jazz Performance",
+    bio: "Renowned jazz saxophonist performing internationally.",
+    sessions: ["Evening Jazz Gala"],
+photo: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=800&auto=format&fit=crop",
+
   },
   {
     id: 7,
     name: "Laura Singh",
-    role: "Panelist",
+    role: "Healthcare Panelist",
     affiliation: "Patrick Henry Community College",
-    topic: "Healthcare Innovation",
-    bio: "Laura is a nurse practitioner pioneering telemedicine in rural areas.",
-    sessions: ["Panel: Innovation in Healthcare Delivery"],
-    photo: "https://randomuser.me/api/portraits/women/17.jpg",
+    topic: "Telemedicine",
+    bio: "Pioneering nurse practitioner innovating rural telemedicine.",
+    sessions: ["Panel: Innovation in Healthcare"],
+    photo: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?q=80&w=800",
   },
   {
     id: 8,
     name: "Robert Evans",
-    role: "Workshop Leader",
+    role: "Photography Workshop",
     affiliation: "Southside Virginia Community College",
-    topic: "Photography",
-    bio: "Robert has been featured in National Geographic for his wildlife photography.",
+    topic: "Wildlife Photography",
+    bio: "National Geographic-featured photographer.",
     sessions: ["Photography for Beginners"],
-    photo: "https://randomuser.me/api/portraits/men/18.jpg",
+    photo: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?q=80&w=800&auto=format&fit=crop",
+
   },
   {
     id: 9,
     name: "Isabella Rossi",
-    role: "Keynote Speaker",
+    role: "Tech Entrepreneur",
     affiliation: "Danville Community College",
     topic: "Women in Tech",
-    bio: "Isabella is a startup founder advocating for women in STEM.",
+    bio: "Founder advocating for women in STEM fields.",
     sessions: ["Keynote: Breaking Barriers in Tech"],
-    photo: "https://randomuser.me/api/portraits/women/19.jpg",
-  },
-  {
-    id: 10,
-    name: "Daniel White",
-    role: "Performer",
-    affiliation: "John Tyler Community College",
-    topic: "Jazz Performance",
-    bio: "Daniel is a renowned jazz saxophonist performing internationally.",
-    sessions: ["Evening Jazz Gala"],
-    photo: "https://randomuser.me/api/portraits/men/20.jpg",
+    photo: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=800",
   },
 ];
 
-// Random mock generator
-function generateMockProfile() {
-  const names = ["Alex Turner", "Rachel Lee", "Hassan Ali", "Maria Gomez", "Ethan Clarke"];
-  const roles = ["Keynote Speaker", "Panelist", "Workshop Leader", "Performer", "Moderator"];
-  const topics = ["AI in Education", "Renewable Energy", "Performing Arts", "Cybersecurity", "Healthcare Innovation"];
-  const affiliations = [
-    "Tidewater Community College",
-    "Northern Virginia Community College",
-    "Piedmont Virginia CC",
-    "Virginia Western CC",
-  ];
-  const randomGender = Math.random() > 0.5 ? "men" : "women";
-  const randomId = Math.floor(Math.random() * 99);
-  return {
-    id: Date.now(),
-    name: names[Math.floor(Math.random() * names.length)],
-    role: roles[Math.floor(Math.random() * roles.length)],
-    affiliation: affiliations[Math.floor(Math.random() * affiliations.length)],
-    topic: topics[Math.floor(Math.random() * topics.length)],
-    bio: "This is a generated mock profile for demonstration purposes.",
-    sessions: ["Session TBD"],
-    photo: `https://randomuser.me/api/portraits/${randomGender}/${randomId}.jpg`,
-  };
-}
-
+// Component
 export default function SpeakerBios() {
   const { role } = useRole();
   const [profiles, setProfiles] = useState(initialProfiles);
@@ -158,24 +127,25 @@ export default function SpeakerBios() {
 
   const filteredProfiles = profiles.filter((p) => {
     return (
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.topic.toLowerCase().includes(search.toLowerCase()) ||
-      p.affiliation.toLowerCase().includes(search.toLowerCase())
-    ) && (filterRole ? p.role === filterRole : true);
+      (p.name.toLowerCase().includes(search.toLowerCase()) ||
+        p.topic.toLowerCase().includes(search.toLowerCase()) ||
+        p.affiliation.toLowerCase().includes(search.toLowerCase())) &&
+      (filterRole ? p.role === filterRole : true)
+    );
   });
 
   return (
     <section className="p-6 space-y-6">
-      <h1 className="text-3xl font-bold text-gray-800">Speakers & Performers</h1>
+      <h1 className="text-3xl font-bold text-gray-800">Speakers, Bands & Performers</h1>
 
       {/* Admin Tools */}
       {role === "admin" && (
         <div className="flex gap-4 mb-4">
           <button
-            onClick={() => setProfiles((prev) => [...prev, generateMockProfile()])}
+            onClick={() => alert("Add profile (demo)")}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
-            ➕ Add Mock Profile
+            ➕ Add Profile
           </button>
         </div>
       )}
@@ -250,26 +220,6 @@ export default function SpeakerBios() {
             <div className="mt-4 text-sm text-blue-600">
               Email: contact@example.com | LinkedIn: linkedin.com/in/example
             </div>
-            {role === "admin" && (
-              <div className="flex gap-2 mt-4">
-                <button
-                  onClick={() => alert("Edit profile (demo)")}
-                  className="bg-yellow-500 text-white px-3 py-1 rounded"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() =>
-                    setProfiles((prev) =>
-                      prev.filter((prof) => prof.id !== selectedProfile.id)
-                    )
-                  }
-                  className="bg-red-600 text-white px-3 py-1 rounded"
-                >
-                  Delete
-                </button>
-              </div>
-            )}
           </div>
         )}
       </Modal>

@@ -1,25 +1,46 @@
+import dotenv from "dotenv";
+// ✅ Load env first, before anything else
+dotenv.config({ path: "./.env" });
+
 import express from "express";
 import cors from "cors";
-import helmet from "helmet";
-import dotenv from "dotenv";
-import authRoutes from "./routes/auth.js";
-import eventRoutes from "./routes/events.js";
-import collegeRoutes from "./routes/colleges.js";
-import venueRoutes from "./routes/venues.js";
-
-dotenv.config();
+import { query } from "./db.js";   // now DATABASE_URL is set correctly
 
 const app = express();
-app.use(helmet());
+const PORT = process.env.PORT || 4000;
+
+// Middleware
+app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
-app.use(cors({ origin: process.env.CORS_ORIGIN?.split(",") ?? true, credentials: true }));
 
-app.get("/api/health", (_req, res) => res.json({ ok: true }));
+// Routes
+import authRoutes from "./routes/auth.js";
+import collegesRoutes from "./routes/colleges.js";
+import venuesRoutes from "./routes/venues.js";
+import eventsRoutes from "./routes/events.js";
+import usersRoutes from "./routes/users.js";
+import registrationsRoutes from "./routes/registrations.js";
 
-app.use("/api/auth", authRoutes);
-app.use("/api/events", eventRoutes);
-app.use("/api/colleges", collegeRoutes);
-app.use("/api/venues", venueRoutes);
+app.use("/auth", authRoutes);
+app.use("/colleges", collegesRoutes);
+app.use("/venues", venuesRoutes);
+app.use("/events", eventsRoutes);
+app.use("/users", usersRoutes);
+app.use("/registrations", registrationsRoutes);
 
-const port = process.env.PORT || 4000;
-app.listen(port, () => console.log(`API listening on :${port}`));
+// Health check
+app.get("/", (req, res) => {
+  res.json({ status: "ok" });
+});
+
+// Start server + DB test
+app.listen(PORT, async () => {
+  console.log(`🚀 API running on http://localhost:${PORT}`);
+
+  try {
+    const result = await query("SELECT current_database(), current_user");
+    console.log("✅ Connected to:", result[0]);
+  } catch (err) {
+    console.error("❌ Postgres connection failed:", err.message);
+  }
+});

@@ -6,14 +6,13 @@ const allNavItems = {
   public: [
     { path: "/public", label: "Public Calendar" },
     { path: "/student", label: "Student Dashboard" },
-    // { path: "/registration", label: "My Registrations" },
+      // { path: "/registration", label: "Register for Event" },
     { path: "/speakers", label: "About Performers" }
   ],
   eventManager: [
     { path: "/event-manager", label: "Event Manager Dash" },
     { path: "/manager/create", label: "Create Event" },
     { path: "/venues", label: "Venue Inventory" },
-    { path: "/registration", label: "Registration" },
     { path: "/speakers", label: "Speaker Bios" },
     { path: "/crm", label: "CRM" },
     { path: "/resources", label: "Resource Management" },
@@ -26,7 +25,6 @@ const allNavItems = {
     { path: "/admin/requests", label: "Review Requests" },
     { path: "/contracts", label: "Contract Generator" },
     { path: "/invoices", label: "Invoices" },
-    { path: "/registration", label: "Registration" },
     { path: "/speakers", label: "Speaker Bios" },
     { path: "/crm", label: "CRM" },
     { path: "/resources", label: "Resource Management" },

@@ -1,30 +1,35 @@
-import { Router } from "express";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+// routes/auth.js
+import express from "express";
 import { query } from "../db.js";
-import { z } from "zod";
-import { validate } from "../middleware/validate.js";
 
-const router = Router();
+const router = express.Router();
 
-const loginSchema = z.object({
-  body: z.object({
-    email: z.string().email(),
-    password: z.string().min(6)
-  })
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    console.log("👉 Incoming login request:", email, password);
+
+    const users = await query("SELECT * FROM users WHERE email=$1", [email]);
+    console.log("👉 Query result:", users);
+
+    const user = users[0];
+
+    if (!user) {
+      return res.status(401).json({ error: "No user found" });
+    }
+
+    if (user.password !== password) {
+      console.log("👉 Password mismatch:", user.password, password);
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    res.json({ success: true, user });
+  } catch (err) {
+    console.error("👉 Login error:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
-router.post("/login", validate(loginSchema), async (req, res) => {
-  const { email, password } = req.body;
-  const { rows } = await query("SELECT * FROM users WHERE email=$1", [email]);
-  const user = rows[0];
-  if (!user) return res.status(400).json({ error: "Invalid credentials" });
-
-  const ok = await bcrypt.compare(password, user.password);
-  if (!ok) return res.status(400).json({ error: "Invalid credentials" });
-
-  const token = jwt.sign({ id: user.id, role: user.role, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1d" });
-  res.json({ token, role: user.role });
-});
 
 export default router;

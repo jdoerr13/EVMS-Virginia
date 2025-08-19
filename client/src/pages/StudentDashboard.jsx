@@ -1,6 +1,5 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useEvents } from "../contexts/EventContext";
 import { Disclosure, Dialog } from "@headlessui/react";
 import {
   ChevronUpIcon,
@@ -9,18 +8,22 @@ import {
   MapIcon,
   SpeakerWaveIcon,
   MegaphoneIcon,
-  XMarkIcon
+  XMarkIcon,
+  ArrowPathIcon
 } from "@heroicons/react/24/outline";
 import { icsForEvent, download } from "../utils/ics";
 import { QRCodeCanvas } from "qrcode.react";
+import { getRegistrations, getEvents } from "../utils/api";
 
 function getStatusClasses(status) {
-  switch (status) {
-    case "Approved":
+  switch (status?.toLowerCase()) {
+    case "approved":
+    case "confirmed":
       return "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200";
-    case "Pending":
+    case "pending":
       return "bg-amber-100 text-amber-800 ring-1 ring-amber-200";
-    case "Closed":
+    case "closed":
+    case "cancelled":
       return "bg-rose-100 text-rose-800 ring-1 ring-rose-200";
     default:
       return "bg-gray-100 text-gray-800 ring-1 ring-gray-200";
@@ -29,18 +32,64 @@ function getStatusClasses(status) {
 
 export default function StudentDashboard() {
   const navigate = useNavigate();
-  const { events } = useEvents();
-  const today = new Date();
-
+  const [registrations, setRegistrations] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
-  const upcomingEvents = useMemo(() => {
-    return events.filter(evt => new Date(evt.date) >= today);
-  }, [events, today]);
+  useEffect(() => {
+    const studentId = 3; // 🔒 always demo student
+
+    (async () => {
+      try {
+        const { data: regs } = await getRegistrations(studentId);
+        const { data: evts } = await getEvents();
+
+        // Merge registrations with events (fallback if event not found)
+        const merged = regs.map(r => {
+          const evt = evts.find(e => e.id === r.event_id);
+          return {
+            ...evt,
+            event_id: r.event_id,
+            registration_id: r.id,
+            reg_status: r.status,
+            title: evt?.title || `(Event #${r.event_id})`,
+            venue: evt?.venue || "TBD",
+            date: evt?.date || r.created_at,
+          };
+        });
+
+        // Deduplicate by event + venue + date
+        const uniq = Array.from(
+          new Map(
+            merged.map(e => [`${e.event_id}-${e.venue}-${e.date}`, e])
+          ).values()
+        );
+
+        setRegistrations(uniq);
+      } catch (err) {
+        console.warn("Falling back to mock registrations:", err);
+        setRegistrations([
+          {
+            id: 9991,
+            title: "Mock Orientation",
+            venue: "Main Hall",
+            date: new Date().toISOString().split("T")[0],
+            reg_status: "Pending",
+          },
+          {
+            id: 9992,
+            title: "Sample Career Fair",
+            venue: "Exhibit Center",
+            date: new Date(Date.now() + 86400000).toISOString().split("T")[0],
+            reg_status: "Confirmed",
+          },
+        ]);
+      }
+    })();
+  }, []);
 
   return (
     <section className="p-6 space-y-10">
-      {/* HEADER */}
+      {/* Header */}
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-zinc-800">My Student Dashboard</h1>
@@ -54,19 +103,21 @@ export default function StudentDashboard() {
         </button>
       </header>
 
-      {/* UPCOMING EVENTS ACCORDION */}
+      {/* Accordion for registrations */}
       <div className="bg-white rounded-xl shadow divide-y divide-zinc-200">
-        {upcomingEvents.length === 0 ? (
+        {registrations.length === 0 ? (
           <p className="p-4 text-gray-500 italic">No upcoming events.</p>
         ) : (
-          upcomingEvents.map(evt => (
-            <Disclosure key={evt.id}>
+          registrations.map(evt => (
+            <Disclosure key={evt.registration_id || evt.id}>
               {({ open }) => (
                 <>
                   <Disclosure.Button className="w-full flex justify-between items-center p-4 hover:bg-zinc-50">
                     <div className="flex items-center gap-3">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusClasses(evt.status)}`}>
-                        {evt.status}
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusClasses(evt.reg_status)}`}
+                      >
+                        {evt.reg_status}
                       </span>
                       <span className="font-semibold">{evt.title}</span>
                     </div>
@@ -77,7 +128,6 @@ export default function StudentDashboard() {
 
                   <Disclosure.Panel className="px-6 pb-4 space-y-3 bg-zinc-50">
                     <p className="text-sm text-zinc-700"><strong>Venue:</strong> {evt.venue}</p>
-                    <p className="text-sm text-zinc-700"><strong>College:</strong> {evt.college}</p>
                     <p className="text-sm text-zinc-700"><strong>Date:</strong> {new Date(evt.date).toLocaleDateString()}</p>
 
                     <div className="flex gap-2">
@@ -106,16 +156,17 @@ export default function StudentDashboard() {
         )}
       </div>
 
-      {/* QUICK RESOURCES */}
+      {/* Quick resources */}
       <div>
         <h2 className="text-xl font-semibold mb-4">Quick Resources</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           {[
             { label: "Meet Speakers", icon: SpeakerWaveIcon, link: "/speakers" },
             { label: "Accessibility", icon: MegaphoneIcon, link: "/accessibility-demo" },
             { label: "Campus Map", icon: MapIcon, link: "#" },
             { label: "My Passes", icon: QrCodeIcon, link: "/passes" },
-            { label: "Messages", icon: CalendarDaysIcon, link: "/messages" }
+            { label: "Messages", icon: CalendarDaysIcon, link: "/messages" },
+            { label: "Sync Class Schedule", icon: ArrowPathIcon, link: "#" }
           ].map((res) => (
             <button
               key={res.label}
@@ -129,7 +180,7 @@ export default function StudentDashboard() {
         </div>
       </div>
 
-      {/* PASS MODAL */}
+      {/* Pass modal */}
       <Dialog open={!!selectedEvent} onClose={() => setSelectedEvent(null)} className="relative z-50">
         <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -142,18 +193,16 @@ export default function StudentDashboard() {
             </div>
 
             {selectedEvent && (
-              <>
-                <div className="flex flex-col items-center gap-3">
-                  <QRCodeCanvas value={`PASS-${selectedEvent.id}`} size={150} />
-                  <div className="text-center">
-                    <h3 className="font-bold">{selectedEvent.title}</h3>
-                    <p className="text-sm text-gray-600">{selectedEvent.venue}</p>
-                    <p className="text-xs text-gray-500">
-                      {new Date(selectedEvent.date).toLocaleDateString()}
-                    </p>
-                  </div>
+              <div className="flex flex-col items-center gap-3">
+                <QRCodeCanvas value={`PASS-${selectedEvent.registration_id}`} size={150} />
+                <div className="text-center">
+                  <h3 className="font-bold">{selectedEvent.title}</h3>
+                  <p className="text-sm text-gray-600">{selectedEvent.venue}</p>
+                  <p className="text-xs text-gray-500">
+                    {new Date(selectedEvent.date).toLocaleDateString()}
+                  </p>
                 </div>
-              </>
+              </div>
             )}
           </Dialog.Panel>
         </div>
