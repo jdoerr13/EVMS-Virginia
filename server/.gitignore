@@ -1,16 +1,55 @@
-# dependencies
+# deps
 node_modules/
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
 
-# environment variables
+# env
 .env
+.env.*
+!.env.example
 
 # logs
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# misc
-.DS_Store
-node_modules
-.env
+# runtime / cache
+.tmp/
+temp/
+tmp/
+.cache/
+dist/
+build/
+coverage/
+.restart
+*.pid
+*.seed
+
+# uploads & generated assets
+uploads/
+public/uploads/
+storage/
+
+# database (local only)
 *.sqlite
+*.sqlite3
+*.db
+db/*.sqlite*
+db/*.db
+*.db-journal
+*.sqlite-journal
+*.sql   # if you keep schema, rename to schema.sql and unignore explicitly
+
+# tooling
+.DS_Store
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# docker
+.docker/
+docker-compose.override.yml
