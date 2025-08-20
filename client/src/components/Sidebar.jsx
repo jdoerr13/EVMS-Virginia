@@ -19,6 +19,7 @@ const allNavItems = {
     { path: "/reports", label: "Reports" },
     { path: "/breakout-sessions", label: "Breakout Sessions" },
     { path: "/mobile-app", label: "Mobile App" },
+      { path: "/accessibility-demo", label: "Accessibility" },
   ],
   admin: [
     { path: "/admin", label: "Admin Dashboard" },
@@ -53,9 +54,49 @@ export default function Sidebar() {
     <aside className="w-64 bg-gradient-to-b from-blue-900 to-gray-900 text-white min-h-screen flex flex-col justify-between p-6 shadow-xl">
       <div>
         {/* Logo/Brand */}
-        <div className="flex items-center gap-2 mb-8">
-          <h2 className="text-2xl font-bold tracking-wide text-blue-300">EVMS</h2>
-        </div>
+        {/* <div className="flex items-center gap-2 mb-8">
+          <h2 className="text-2xl font-bold tracking-wide text-blue-300">Event & Venue Management Software Prototype</h2>
+        </div> */}
+
+
+        {/* <div className="px-3 py-4">
+  <div className="text-sm font-semibold uppercase tracking-widest text-blue-200/90">
+    EVMS
+  </div>
+  <div className="text-xl font-extrabold bg-gradient-to-r from-sky-300 to-indigo-300 
+                  bg-clip-text text-transparent leading-tight">
+    Event & Venue
+  </div>
+  <div className="text-blue-100 -mt-0.5">Management</div>
+  <span className="mt-1 inline-block rounded-full bg-white/10 px-2 py-0.5 
+                   text-[10px] font-bold text-blue-50 ring-1 ring-white/20">
+    Prototype
+  </span>
+</div> */}
+{/* Sidebar brand / logo */}
+<div className="flex items-center gap-3 px-3 py-5 select-none">
+  {/* Monogram tile */}
+  <div className="grid h-12 w-12 place-items-center rounded-2xl 
+                  bg-gradient-to-br from-indigo-600 to-blue-600 
+                  text-white font-black text-lg shadow-md ring-1 ring-white/15">
+    EV
+  </div>
+
+  {/* Wordmark */}
+  <div className="leading-tight">
+    <div className="text-white font-extrabold text-[17px] tracking-tight">
+      Event & Venue
+    </div>
+    <div className="text-blue-100 text-[13px] font-semibold -mt-0.5">
+      Management
+      <span className="ml-2 align-middle rounded-full px-2 py-0.5 
+                       text-[11px] font-bold text-blue-50 
+                       bg-white/10 ring-1 ring-white/20">
+        Prototype
+      </span>
+    </div>
+  </div>
+</div>
 
         <nav className="space-y-2">
           {navItems.map(({ path, label }) => {

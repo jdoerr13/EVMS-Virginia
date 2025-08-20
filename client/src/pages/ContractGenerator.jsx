@@ -58,7 +58,8 @@ export default function ContractGenerator() {
 
   const handleDownload = () => {
     if (!preview) return;
-    const base = event?.title?.trim().replace(/\s+/g, "-").toLowerCase() || "contract";
+    const base =
+      event?.title?.trim().replace(/\s+/g, "-").toLowerCase() || "contract";
     downloadText(`${base}-contract.txt`, preview);
   };
 
@@ -69,12 +70,17 @@ export default function ContractGenerator() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-4">
-      <h1 className="text-2xl font-bold">Contract Generator</h1>
+    <div className="mx-auto max-w-4xl p-6 space-y-6">
+      {/* Header */}
+      <header className="space-y-1">
+        <h1 className="text-2xl font-bold">Contract Generator</h1>
+        <p className="text-sm text-gray-600">
+          Pick an event, choose a template, generate a preview, then download.
+        </p>
+      </header>
 
-
-      {/* Event picker if no query param or for switching */}
-      <div className="bg-gray-50 border rounded p-3 space-y-2">
+      {/* Event Picker Card */}
+      <section className="bg-white rounded-2xl border shadow-sm p-4 space-y-3">
         <div className="font-semibold">Event</div>
         <select
           value={selectedId}
@@ -83,7 +89,7 @@ export default function ContractGenerator() {
             applyQueryParam(e.target.value);
             setPreview("");
           }}
-          className="w-full border rounded px-3 py-2"
+          className="w-full border rounded-lg px-3 py-2"
         >
           <option value="">Select an event…</option>
           {events
@@ -97,62 +103,81 @@ export default function ContractGenerator() {
         </select>
 
         {event ? (
-          <div className="text-sm">
-            <div>{event.title}</div>
-            <div>{event.college} • {event.venue}</div>
-            <div>{event.date} {event.startTime}-{event.endTime}</div>
+          <div className="text-sm text-gray-700">
+            <div className="font-medium">{event.title}</div>
+            <div>
+              {event.college} • {event.venue}
+            </div>
+            <div>
+              {event.date} {event.startTime}-{event.endTime}
+            </div>
           </div>
         ) : (
           <div className="text-sm text-gray-500">
             Choose an event to merge details into the contract.
           </div>
         )}
-      </div>
+      </section>
 
-      <div className="space-y-3">
-        <label className="block font-semibold">Select Template</label>
-        <select
-          value={template}
-          onChange={(e) => setTemplate(e.target.value)}
-          className="w-full border rounded px-3 py-2"
-          disabled={!event}
-        >
-          <option>Standard Event Contract</option>
-          <option>Venue Rental Agreement</option>
-          <option>Speaker Engagement Letter</option>
-        </select>
-
-        <div className="flex gap-2">
-          <button
-            onClick={generatePreview}
+      {/* Controls + Preview in a consistent grid */}
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Controls Card */}
+        <div className="bg-white rounded-2xl border shadow-sm p-4 space-y-3">
+          <label className="block font-semibold">Select Template</label>
+          <select
+            value={template}
+            onChange={(e) => setTemplate(e.target.value)}
+            className="w-full border rounded-lg px-3 py-2"
             disabled={!event}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
           >
-            Generate Preview
-          </button>
-          <button
-            onClick={handleDownload}
-            disabled={!preview}
-            className="px-4 py-2 rounded border disabled:opacity-50"
-          >
-            Download (.txt)
-          </button>
+            <option>Standard Event Contract</option>
+            <option>Venue Rental Agreement</option>
+            <option>Speaker Engagement Letter</option>
+          </select>
+
+          <div className="flex flex-wrap gap-2 pt-2">
+            <button
+              onClick={generatePreview}
+              disabled={!event}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            >
+              Generate Preview
+            </button>
+            <button
+              onClick={handleDownload}
+              disabled={!preview}
+              className="px-4 py-2 rounded-lg border hover:bg-gray-50 disabled:opacity-50"
+            >
+              Download (.txt)
+            </button>
+            {/* <button
+              onClick={() => navigate(-1)}
+              className="px-4 py-2 rounded-lg border hover:bg-gray-50"
+            >
+              ← Back
+            </button> */}
+          </div>
         </div>
-      </div>
 
-      {preview && (
-        <pre className="mt-2 border rounded p-4 bg-white whitespace-pre-wrap text-sm">
-          {preview}
-        </pre>
-      )}
-      <button
-          onClick={() => navigate(-1)}
-          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-        >
-          ← Back
-        </button>
+        {/* Preview Card */}
+        <div className="bg-white rounded-2xl border shadow-sm p-4">
+          <div className="font-semibold mb-2">Preview</div>
+          {preview ? (
+            <pre className="whitespace-pre-wrap text-sm">{preview}</pre>
+          ) : (
+            <div className="text-sm text-gray-500">
+              No preview yet. Generate one to review it here.
+            </div>
+          )}
+        </div>
+        
+      </section>
+               <button
+            onClick={() => navigate(-1)}
+            className="px-4 py-2 rounded-lg border hover:bg-gray-50"
+          >
+            ← Back
+          </button>
     </div>
-
-    
   );
 }

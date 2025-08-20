@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Extras */
+body {
+  @apply bg-gradient-to-br from-gray-100 to-gray-300 text-gray-800 font-sans;
+}
