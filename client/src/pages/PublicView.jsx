@@ -17,7 +17,7 @@ export default function PublicView() {
 
 const normalized = (s) => (s ? String(s).toLowerCase().trim() : "");
 
-  /** ✅ Step 1: Deduplicate events by ID */
+  /** Step 1: Deduplicate events by ID */
 const uniqueEvents = useMemo(() => {
   const seen = new Set();
   return events.filter(e => {
@@ -213,9 +213,10 @@ const getMockImage = (evt) => {
               </span>
             </div>
             <div className="p-4 space-y-1">
-              <h3 className="text-lg font-semibold">
-  {evt.title} {evt.title?.includes("Graduation") && "🎓"}
-</h3>
+
+            <h3 className="text-lg font-semibold">
+              {evt.title || "(Untitled Event)"} {(evt.title || "").includes("Graduation") && "🎓"}
+            </h3>
               <p className="text-sm text-gray-600">{evt.venue}</p>
               <p className="text-xs text-gray-500">{evt.college}</p>
             </div>
@@ -235,9 +236,11 @@ const getMockImage = (evt) => {
           >
             <img src={getMockImage(selectedEvent)} alt={selectedEvent.title} className="w-full h-56 object-cover" />
             <div className="p-6 space-y-4">
-              <h2 className="text-3xl font-bold">
-                {selectedEvent.title} {selectedEvent.title.includes("Graduation") && "🎓"}
-              </h2>
+
+               <h2 className="text-3xl font-bold">
+   {selectedEvent?.title || "(Untitled Event)"} {((selectedEvent?.title || "").includes("Graduation")) && "🎓"}
+ </h2>
+
               <p className="text-sm text-gray-500">
                 📅 {new Date(selectedEvent.date).toLocaleDateString()} • 📍 {selectedEvent.venue} — {selectedEvent.college}
               </p>
