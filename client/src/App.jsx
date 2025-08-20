@@ -83,7 +83,7 @@ export default function App() {
                 <Route
                   path="/admin/requests"
                   element={
-                    <ProtectedRoute allowedRoles={["admin"]}>
+                    <ProtectedRoute allowedRoles={["admin", "eventManager"]}>
                       <ReviewRequests /> {/* ✅ server-backed */}
                     </ProtectedRoute>
                   }

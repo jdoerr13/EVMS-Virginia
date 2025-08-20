@@ -38,14 +38,38 @@ export default function Login() {
 
       <div className="max-w-md w-full space-y-8 bg-white shadow-lg rounded-lg p-8 border border-gray-200">
         
-        {/* Header */}
-        <div className="text-center">
+          {/* Header */}
+          <div className="flex items-center gap-4 justify-center py-6 select-none">
+            {/* Monogram tile */}
+            <div className="grid h-14 w-14 place-items-center rounded-2xl 
+                            bg-gradient-to-br from-indigo-600 to-blue-600 
+                            text-white font-black text-xl shadow-md ring-1 ring-white/15">
+              EV
+            </div>
+
+            {/* Wordmark */}
+            <div className="leading-tight text-left">
+              <div className="text-gray-800 font-extrabold text-[20px] tracking-tight">
+                Event & Venue
+              </div>
+              <div className="text-gray-600 text-[14px] font-semibold -mt-0.5">
+                Management
+                <span className="ml-2 align-middle rounded-full px-2.5 py-0.5 
+                                text-[12px] font-bold text-blue-700 
+                                bg-blue-50 ring-1 ring-blue-200">
+                  Prototype
+                </span>
+              </div>
+            </div>
+
+
+        {/* <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-800">
             VCCS Event & Venue Management System
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">
+          </h1> */}
+          {/* <p className="text-sm text-gray-500 mt-1">
             Virginia Community College System — 2025
-          </p>
+          </p> */}
         </div>
 
         {/* Login Form */}
